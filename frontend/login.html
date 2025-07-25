@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Number Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        
+        .logo {
+            margin-bottom: 30px;
+            font-size: 28px;
+            color: #fc8a06;
+            font-weight: bold;
+        }
+        
+        .login-header {
+            margin-bottom: 30px;
+        }
+        
+        .login-header h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .phone-input {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .country-code {
+            padding: 12px 15px;
+            background-color: #f5f5f5;
+            border-right: 1px solid #ddd;
+            font-size: 16px;
+        }
+        
+        .form-group input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #fc8a06;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        .login-button:hover {
+            background-color: #e67a00;
+        }
+        
+        .divider {
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            color: #999;
+        }
+        
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .divider::before {
+            margin-right: 15px;
+        }
+        
+        .divider::after {
+            margin-left: 15px;
+        }
+        
+        .alternative-login {
+            margin-top: 20px;
+            font-size: 15px;
+            color: #666;
+        }
+        
+        .alternative-login a {
+            color: #fc8a06;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">Vendor</div>
+        
+        <div class="login-header">
+            <h1>Login with Phone</h1>
+            <p>We'll send you a verification code</p>
+        </div>
+        
+        <form id="phoneLoginForm">
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <div class="phone-input">
+                    <span class="country-code">+91</span>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required 
+                           pattern="[0-9]{10}" title="10-digit phone number">
+                </div>
+            </div>
+            
+            <button type="submit" class="login-button">Send Verification Code</button>
+        </form>
+        
+        <div class="divider">OR</div>
+        
+        <div class="alternative-login">
+            <a href="/email-login">Login with Email instead</a>
+        </div>
+    </div>
+
+</body>
+</html>
