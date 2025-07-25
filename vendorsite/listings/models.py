@@ -2,14 +2,11 @@ from django.db import models
 from vendor.models import Vendor
 from supplier.models import Supplier
 
-# Created by Purva Bhoyar
-
 class ProductListing(models.Model):
     """
     Represents a product listing in the system.
     Each listing is associated with a vendor and optionally a supplier.
     """
-
     vendor = models.ForeignKey(
         Vendor,
         on_delete=models.CASCADE,
@@ -33,7 +30,7 @@ class ProductListing(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.title} ({self.sku})"
 
     class Meta:
