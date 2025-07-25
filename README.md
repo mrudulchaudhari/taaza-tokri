@@ -9,6 +9,7 @@
 `python -m venv venv`
 
 `./venv/Scripts/activate`
+
 The above step should show a (venv) before the directory, if any issue contact Mrudul
 
 ### download requirements
