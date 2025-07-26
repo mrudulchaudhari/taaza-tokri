@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Rajura Misal Bhandaar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🍲 Rajura Misal Bhandaar</div>
+            <div class="nav-links">
+                <a href="buyerDashboard.html">Dashboard</a>
+                <a href="products.html">Products</a>
+                <a href="cart.html" class="cart-icon">
+                    🛒 <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <a href="checkout.html">Checkout</a>
+                <a href="login.html">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="breadcrumb">Dashboard > Vendors > Products</div>
+            <h1 class="page-title">Fresh Products</h1>
+            <div class="vendor-info" id="vendorInfo">
+                <!-- Vendor info will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Search Products</label>
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Search products..." id="searchInput">
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Category</label>
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="vegetables">Vegetables</option>
+                        <option value="fruits">Fruits</option>
+                        <option value="dairy">Dairy</option>
+                        <option value="spices">Spices</option>
+                        <option value="grains">Grains</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Sort By</label>
+                    <select class="filter-select" id="sortSelect">
+                        <option value="name">Name</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="popular">Most Popular</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Price Range</label>
+                    <select class="filter-select" id="priceFilter">
+                        <option value="all">All Prices</option>
+                        <option value="0-50">Under ₹50</option>
+                        <option value="50-100">₹50 - ₹100</option>
+                        <option value="100-200">₹100 - ₹200</option>
+                        <option value="200+">Above ₹200</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="category-tabs" id="categoryTabs">
+            <!-- Category tabs will be populated by JavaScript -->
+        </div>
+
+        <div class="results-info">
+            <span id="resultsCount">Showing 12 products</span>
+            <span>Filtered by your preferences</span>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- Product cards will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Sample products data
+        const products = [
+            {
+                id: 1,
+                name: "Fresh Tomatoes",
+                description: "Organic red tomatoes, perfect for cooking and salads",
+                price: 45,
+                unit: "per kg",
+                category: "vegetables",
+                stock: "In Stock",
+                image: "🍅",
+                badge: "Fresh"
+            },
+            {
+                id: 2,
+                name: "Onions",
+                description: "Fresh white onions, essential for Indian cooking",
+                price: 30,
+                unit: "per kg",
+                category: "vegetables",
+                stock: "In Stock",
+                image: "🧅",
+                badge: "Popular"
+            },
+            {
+                id: 3,
+                name: "Potatoes",
+                description: "Fresh potatoes, perfect for various dishes",
+                price: 25,
+                unit: "per kg",
+                category: "vegetables",
+                stock: "In Stock",
+                image: "🥔",
+                badge: "Best Value"
+            },
+            {
+                id: 4,
+                name: "Fresh Milk",
+                description: "Pure cow milk, delivered fresh daily",
+                price: 60,
+                unit: "per liter",
+                category: "dairy",
+                stock: "In Stock",
+                image: "🥛",
+                badge: "Fresh"
+            },
+            {
+                id: 5,
+                name: "Paneer",
+                description: "Fresh homemade paneer, perfect for curries",
+                price: 180,
+                unit: "per kg",
+                category: "dairy",
+                stock: "In Stock",
+                image: "🧀",
+                badge: "Premium"
+            },
+            {
+                id: 6,
+                name: "Red Chilli Powder",
+                description: "Premium quality red chilli powder",
+                price: 120,
+                unit: "per 500g",
+                category: "spices",
+                stock: "In Stock",
+                image: "🌶️",
+                badge: "Hot"
+            },
+            {
+                id: 7,
+                name: "Turmeric Powder",
+                description: "Pure turmeric powder, great for health",
+                price: 80,
+                unit: "per 500g",
+                category: "spices",
+                stock: "In Stock",
+                image: "🟡",
+                badge: "Healthy"
+            },
+            {
+                id: 8,
+                name: "Basmati Rice",
+                description: "Premium quality basmati rice",
+                price: 85,
+                unit: "per kg",
+                category: "grains",
+                stock: "In Stock",
+                image: "🍚",
+                badge: "Premium"
+            },
+            {
+                id: 9,
+                name: "Bananas",
+                description: "Fresh yellow bananas, perfect for snacking",
+                price: 40,
+                unit: "per dozen",
+                category: "fruits",
+                stock: "In Stock",
+                image: "🍌",
+                badge: "Fresh"
+            },
+            {
+                id: 10,
+                name: "Apples",
+                description: "Sweet red apples, imported quality",
+                price: 150,
+                unit: "per kg",
+                category: "fruits",
+                stock: "In Stock",
+                image: "🍎",
+                badge: "Imported"
+            },
+            {
+                id: 11,
+                name: "Bread",
+                description: "Fresh white bread, baked daily",
+                price: 35,
+                unit: "per pack",
+                category: "grains",
+                stock: "In Stock",
+                image: "🍞",
+                badge: "Fresh"
+            },
+            {
+                id: 12,
+                name: "Butter",
+                description: "Pure butter, perfect for cooking",
+                price: 120,
+                unit: "per 500g",
+                category: "dairy",
+                stock: "In Stock",
+                image: "🧈",
+                badge: "Pure"
+            }
+        ];
+
+        // Sample vendor data
+        const vendors = {
+            1: { name: "Fresh Foods Co.", avatar: "🥬", rating: 4.8 },
+            2: { name: "Spice Paradise", avatar: "🌶️", rating: 4.9 },
+            3: { name: "Local Dairy Farm", avatar: "🥛", rating: 4.6 },
+            4: { name: "Bread & Bakery", avatar: "🍞", rating: 4.7 }
+        };
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function renderVendorInfo() {
+            const selectedVendor = localStorage.getItem('selectedVendor');
+            const vendorInfo = document.getElementById('vendorInfo');
+            
+            if (selectedVendor && vendors[selectedVendor]) {
+                const vendor = vendors[selectedVendor];
+                vendorInfo.innerHTML = `
+                    <div class="vendor-avatar">${vendor.avatar}</div>
+                    <div class="vendor-details">
+                        <h3>${vendor.name}</h3>
+                        <div class="vendor-rating">⭐ ${vendor.rating} Rating</div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderCategoryTabs() {
+            const categories = ['all', 'vegetables', 'fruits', 'dairy', 'spices', 'grains'];
+            const tabsContainer = document.getElementById('categoryTabs');
+            
+            tabsContainer.innerHTML = categories.map(category => `
+                <div class="category-tab ${category === 'all' ? 'active' : ''}" 
+                     onclick="filterByCategory('${category}')">
+                    ${category.charAt(0).toUpperCase() + category.slice(1)}
+                </div>
+            `).join('');
+        }
+
+        function renderProducts(productsToRender) {
+            const grid = document.getElementById('productsGrid');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            resultsCount.textContent = `Showing ${productsToRender.length} products`;
+            
+            grid.innerHTML = productsToRender.map(product => `
+                <div class="product-card">
+                    <div class="product-badge">${product.badge}</div>
+                    <div class="product-image">${product.image}</div>
+                    <div class="product-title">${product.name}</div>
+                    <div class="product-description">${product.description}</div>
+                    <div class="product-meta">
+                        <div>
+                            <div class="product-price">₹${product.price}</div>
+                            <div class="product-unit">${product.unit}</div>
+                        </div>
+                        <div class="product-stock">${product.stock}</div>
+                    </div>
+                    <div class="product-actions">
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="updateQuantity(${product.id}, -1)">-</button>
+                            <input type="number" class="quantity-input" value="0" min="0" 
+                                   id="qty-${product.id}" onchange="updateQuantity(${product.id}, 0)">
+                            <button class="quantity-btn" onclick="updateQuantity(${product.id}, 1)">+</button>
+                        </div>
+                        <button class="btn" onclick="addToCart(${product.id})">Add to Cart</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const sortBy = document.getElementById('sortSelect').value;
+            const priceFilter = document.getElementById('priceFilter').value;
+            
+            let filtered = products.filter(product => {
+                const matchesSearch = product.name.toLowerCase().includes(searchTerm) || 
+                                    product.description.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
+                
+                let matchesPrice = true;
+                if (priceFilter !== 'all') {
+                    const [min, max] = priceFilter.split('-').map(Number);
+                    if (max) {
+                        matchesPrice = product.price >= min && product.price <= max;
+                    } else {
+                        matchesPrice = product.price >= min;
+                    }
+                }
+                
+                return matchesSearch && matchesCategory && matchesPrice;
+            });
+            
+            // Sort products
+            filtered.sort((a, b) => {
+                switch(sortBy) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'price-low':
+                        return a.price - b.price;
+                    case 'price-high':
+                        return b.price - a.price;
+                    case 'popular':
+                        return Math.random() - 0.5; // Simplified popularity sorting
+                    default:
+                        return 0;
+                }
+            });
+            
+            renderProducts(filtered);
+        }
+
+        function filterByCategory(category) {
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update category filter
+            document.getElementById('categoryFilter').value = category;
+            filterProducts();
+        }
+
+        function updateQuantity(productId, change) {
+            const input = document.getElementById(`qty-${productId}`);
+            let currentQty = parseInt(input.value) || 0;
+            
+            if (change === 0) {
+                // Direct input change
+                currentQty = parseInt(input.value) || 0;
+            } else {
+                // Button click
+                currentQty = Math.max(0, currentQty + change);
+            }
+            
+            input.value = currentQty;
+        }
+
+        function addToCart(productId) {
+            const input = document.getElementById(`qty-${productId}`);
+            const quantity = parseInt(input.value) || 0;
+            
+            if (quantity <= 0) {
+                alert('Please select a quantity');
+                return;
+            }
+            
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    unit: product.unit,
+                    image: product.image,
+                    quantity: quantity
+                });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            input.value = 0;
+            
+            alert(`${quantity} ${product.name} added to cart!`);
+        }
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            renderVendorInfo();
+            renderCategoryTabs();
+            renderProducts(products);
+            updateCartCount();
+            
+            // Add filter event listeners
+            document.getElementById('searchInput').addEventListener('input', filterProducts);
+            document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+            document.getElementById('sortSelect').addEventListener('change', filterProducts);
+            document.getElementById('priceFilter').addEventListener('change', filterProducts);
+        });
+    </script>
+</body>
+</html> 

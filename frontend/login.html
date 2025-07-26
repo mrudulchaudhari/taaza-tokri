@@ -146,11 +146,11 @@
 </head>
 <body>
     <div class="login-container">
-        <div class="logo">Vendor</div>
+        <div class="logo">🍲 Rajura Misal Bhandaar</div>
         
         <div class="login-header">
-            <h1>Login with Phone</h1>
-            <p>We'll send you a verification code</p>
+            <h1>Welcome Back!</h1>
+            <p>Login to access your vendor dashboard</p>
         </div>
         
         <form id="phoneLoginForm">
@@ -163,15 +163,58 @@
                 </div>
             </div>
             
-            <button type="submit" class="login-button">Send Verification Code</button>
+            <button type="submit" class="login-button">Login to Dashboard</button>
         </form>
         
         <div class="divider">OR</div>
         
         <div class="alternative-login">
-            <a href="/email-login">Login with Email instead</a>
+            <a href="#" onclick="demoLogin()">Try Demo Login</a>
         </div>
     </div>
 
+    <script>
+        document.getElementById('phoneLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const phone = document.getElementById('phone').value;
+            
+            if (phone.length === 10 && /^\d+$/.test(phone)) {
+                // Store user login info (in a real app, this would be validated with backend)
+                localStorage.setItem('userPhone', phone);
+                localStorage.setItem('isLoggedIn', 'true');
+                
+                // Redirect to food type selection page
+                window.location.href = 'foodTypeSelection.html';
+            } else {
+                alert('Please enter a valid 10-digit phone number');
+            }
+        });
+
+        function demoLogin() {
+            // Demo login for testing
+            localStorage.setItem('userPhone', '9876543210');
+            localStorage.setItem('isLoggedIn', 'true');
+            
+            // Redirect to food type selection page
+            window.location.href = 'foodTypeSelection.html';
+        }
+
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                // Check if user has already selected food type
+                const hasSelectedFoodType = localStorage.getItem('selectedFoodType');
+                if (hasSelectedFoodType) {
+                    // User has already completed setup, go to dashboard
+                    window.location.href = 'buyerDashboard.html';
+                } else {
+                    // User is logged in but hasn't selected food type
+                    window.location.href = 'foodTypeSelection.html';
+                }
+            }
+        });
+    </script>
 </body>
 </html>
