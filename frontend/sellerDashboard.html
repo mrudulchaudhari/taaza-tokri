@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Seller Dashboard</title>
+  <style>
+    :root {
+      --primary: #648364;
+      --background: #EDE8D0;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--background);
+    }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .dashboard-container {
+      padding: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .product-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    input, select, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .quantity {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .qty-btn {
+      width: 30px;
+      height: 30px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .nav-links a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: bold;
+      margin: 0 1rem;
+    }
+
+    /* Buttons for pending orders */
+    .order-action-btn {
+      margin-left: 10px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      border: none;
+      background: none;
+    }
+
+    .order-action-btn.tick {
+      color: green;
+    }
+
+    .order-action-btn.cross {
+      color: red;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Welcome Seller</h1>
+  </header>
+
+  <div class="dashboard-container">
+
+    <!-- Add Product Card -->
+    <div class="card">
+      <h3>Add Product</h3>
+      <div class="product-inputs">
+        <input type="text" placeholder="Product Name" id="productName"/>
+        <div class="quantity">
+          <button class="qty-btn" onclick="changeQty(-1)">-</button>
+          <input type="number" id="quantity" value="1" min="1" style="width: 60px;" />
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+        <select id="unit">
+          <option value="kg">Kg</option>
+          <option value="gm">Gram</option>
+          <option value="litre">Litre</option>
+          <option value="ml">Millilitre</option>
+        </select>
+        <button onclick="addProduct()">Add Product</button>
+      </div>
+    </div>
+
+    <!-- Stock Display Card -->
+    <div class="card">
+      <h3>Current Stock</h3>
+      <ul id="stockList">
+        <!-- Products will appear here -->
+      </ul>
+    </div>
+
+    <!-- Pending Orders -->
+    <div class="card">
+      <h3>Pending Orders</h3>
+      <ul id="pendingOrdersList">
+        <!-- Orders with tick and cross buttons will be rendered here -->
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="nav-links">
+    <a href="order_history.html">View Order History</a>
+  </div>
+
+  <script>
+    // Quantity increment/decrement
+    function changeQty(val) {
+      let qty = document.getElementById('quantity');
+      qty.value = Math.max(1, parseInt(qty.value) + val);
+    }
+
+    // Adding product to stock
+    function addProduct() {
+      const name = document.getElementById("productName").value.trim();
+      const qty = document.getElementById("quantity").value;
+      const unit = document.getElementById("unit").value;
+
+      if (!name) return alert("Please enter product name");
+
+      const stockList = document.getElementById("stockList");
+      const li = document.createElement("li");
+      li.innerText = `${name} - ${qty} ${unit}`;
+      stockList.appendChild(li);
+
+      // Clear inputs
+      document.getElementById("productName").value = "";
+      document.getElementById("quantity").value = 1;
+    }
+
+    // Pending orders array (sample data)
+    const pendingOrders = [
+      { name: 'Pav', qty: '5kg', vendor: 'Vendor A' },
+      { name: 'Masala', qty: '3L', vendor: 'Vendor B' }
+    ];
+
+    // Arrays to hold shipped and cancelled orders (for frontend tracking)
+    const shippedOrders = [];
+    const cancelledOrders = [];
+
+    // Render pending orders with tick and cross buttons
+    function renderPendingOrders() {
+      const ul = document.getElementById("pendingOrdersList");
+      ul.innerHTML = ''; // clear existing
+
+      pendingOrders.forEach((order, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          ${order.name} - ${order.qty} - Ordered by ${order.vendor}
+          <button class="order-action-btn tick" title="Mark as shipped" onclick="markShipped(${index})">✅</button>
+          <button class="order-action-btn cross" title="Mark as cancelled" onclick="markCancelled(${index})">❌</button>
+        `;
+        ul.appendChild(li);
+      });
+    }
+
+    function markShipped(index) {
+      shippedOrders.push(pendingOrders[index]); // Add to shipped
+      pendingOrders.splice(index, 1);           // Remove from pending
+      renderPendingOrders();
+      alert("Order marked as shipped.");
+    }
+
+    function markCancelled(index) {
+      cancelledOrders.push(pendingOrders[index]); // Add to cancelled
+      pendingOrders.splice(index, 1);              // Remove from pending
+      renderPendingOrders();
+      alert("Order marked as cancelled.");
+    }
+
+    // Initial render
+    renderPendingOrders();
+  </script>
+
+</body>
+</html>
