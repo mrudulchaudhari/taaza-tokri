@@ -5,5 +5,6 @@ class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = (
         ('vendor', 'Vendor'),
         ('supplier', 'Supplier'),
+        ('buyer', 'Buyer'),
     )
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)

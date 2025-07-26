@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🍲 Rajura Misal Bhandaar</div>
+            <div class="nav-links">
+                <a href="{% url 'buyer_dashboard' %}" class="active">Dashboard</a>
+                <a href="{% url 'listing:list_materials' %}">Products</a>
+                <a href="{% url 'listing:cart_detail' %}">Cart</a>
+                <a href="#">Checkout</a>
+                <div class="user-profile-icon" onclick="toggleProfilePopup()">👤</div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="popup-overlay" id="popupOverlay" onclick="closeProfilePopup()"></div>
+    <div class="user-profile-popup" id="userProfilePopup">
+        <div class="popup-header">
+            <div class="popup-title">User Profile</div>
+            <button class="close-popup" onclick="closeProfilePopup()">×</button>
+        </div>
+        <div class="popup-content">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-info">
+                <h3>Welcome, {{ user.get_full_name|default:user.username }}!</h3>
+                <p>{{ user.user_type|capfirst }}</p>
+                <p>📍 Mumbai, Maharashtra</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">{{ order_count }}</div>
+                    <div class="stat-label">Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">₹{{ total_spent }}</div>
+                    <div class="stat-label">Spent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ rating }}</div>
+                    <div class="stat-label">Rating</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ vendor_count }}</div>
+                    <div class="stat-label">Vendors</div>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <a href="#" class="profile-action">
+                    <div class="profile-action-icon">✏️</div>
+                    <div class="profile-action-text">Edit Profile</div>
+                </a>
+                <a href="#" class="profile-action">
+                    <div class="profile-action-icon">📋</div>
+                    <div class="profile-action-text">Order History</div>
+                </a>
+                <a href="{% url 'logout' %}" class="profile-action">
+                    <div class="profile-action-icon">🚪</div>
+                    <div class="profile-action-text">Logout</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">Welcome to Your Dashboard!</h2>
+        <p style="color: #666; margin-bottom: 24px;">Manage your orders and find the best vendors for fresh ingredients.</p>
+        
+        <div class="quick-actions">
+            <div class="action-card" onclick="window.location.href='{% url 'listing:list_materials' %}'">
+                <div class="action-icon">🛍️</div>
+                <h4>Browse Products</h4>
+                <p>Shop fresh ingredients from your favorite vendors</p>
+            </div>
+            <div class="action-card" onclick="window.location.href='{% url 'listing:cart_detail' %}'">
+                <div class="action-icon">🛒</div>
+                <h4>View Cart</h4>
+                <p>Check your current order items</p>
+            </div>
+        </div>
+
+        <h3 class="section-title" style="margin-top: 32px;">Recent Activity</h3>
+        <div class="recent-activity">
+            {% for activity in recent_activity %}
+            <div class="activity-item">
+                <div class="activity-icon">{{ activity.icon }}</div>
+                <div class="activity-details">
+                    <h4>{{ activity.title }}</h4>
+                    <p>{{ activity.description }}</p>
+                    <span class="activity-time">{{ activity.time }}</span>
+                </div>
+            </div>
+            {% empty %}
+            <p>No recent activity.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>

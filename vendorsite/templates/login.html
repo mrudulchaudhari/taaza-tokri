@@ -4,40 +4,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phone Number Login</title>
-    <!-- This line links to your new CSS file -->
+    <title>Login - Rajura Misal Bhandaar</title>
+    
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <div class="login-container">
-        <div class="logo">Vendor</div>
-
-        <div class="login-header">
-            <h1>Login with Phone</h1>
-            <p>We'll send you a verification code</p>
+        <div class="logo">
+            🍲 Rajura Misal Bhandaar
         </div>
 
-        <!-- The form now points to a Django view and includes a CSRF token for security -->
-        <form id="phoneLoginForm" method="POST">
+        <div class="login-header">
+            <h1>Welcome Back!</h1>
+            <p>Please enter your details to log in.</p>
+        </div>
+
+        {% if messages %}
+            <ul class="messages" style="list-style-type: none; padding: 0; margin-bottom: 1rem;">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}" style="padding: 10px; border-radius: 5px; color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="post">
             {% csrf_token %}
+            <input type="hidden" name="action" value="phone_login">
             <div class="form-group">
                 <label for="phone">Phone Number</label>
                 <div class="phone-input">
                     <span class="country-code">+91</span>
-                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required 
-                           pattern="[0-9]{10}" title="10-digit phone number">
+                    <input type="tel" id="phone" name="phone" placeholder="10-digit mobile number" required>
                 </div>
             </div>
-
-            <button type="submit" class="login-button">Send Verification Code</button>
+            <button type="submit" class="login-button">Login with Phone</button>
         </form>
 
         <div class="divider">OR</div>
 
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="superuser_login">
+             <div class="form-group">
+                <label for="username">Admin Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter username" required>
+             </div>
+             <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter password" required>
+             </div>
+            <button type="submit" class="login-button">Admin Login</button>
+        </form>
+
         <div class="alternative-login">
-            <!-- This link should use the Django URL tag -->
-            <!-- Make sure you have a URL pattern named 'email_login' in your urls.py -->
-            <a href="#">Login with Email instead</a>
+            Don't have an account? <a href="#">Register here</a>
         </div>
     </div>
 </body>

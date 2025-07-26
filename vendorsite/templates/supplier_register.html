@@ -1,45 +1,14 @@
-{% extends 'base.html' %}
-
-{% block title %}Supplier Registration{% endblock %}
-
-{% block content %}
-  <h2>Create a Supplier Account</h2>
-  <form method="post" novalidate>
-    {% csrf_token %}
-
-    <label>Company Name:</label>
-    <input type="text" name="company_name" required><br>
-
-    <label>Email:</label>
-    <input type="email" name="email" required><br>
-
-    <label>Phone Number:</label>
-    <input type="text" name="phone_number" required><br>
-
-    <label>Password:</label>
-    <input type="password" name="password" required><br>
-
-    <button type="submit">Sign Up</button>
-
-    {% if errors %}
-      <div style="color: red;">
-        <p>{{ errors }}</p>
-      </div>
-    {% endif %}
-  </form>
-{% endblock %}
-a{% extends 'base.html' %}
-
-{% block content %}
-<h2>Supplier Registration</h2>
-<form method="post">
-    {% csrf_token %}
-    Email: <input type="email" name="email"><br>
-    Phone Number: <input type="text" name="phone_number"><br>
-    Password: <input type="password" name="password"><br>
-    Name: <input type="text" name="name"><br>
-    City: <input type="text" name="city"><br>
-    Address: <input type="text" name="address"><br>
-    <button type="submit">Register</button>
-</form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Supplier Registration</title>
+    </head>
+<body>
+    <h2>Register as a Supplier</h2>
+    <form method="post">
+        {% csrf_token %} {{ form.as_p }}
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>

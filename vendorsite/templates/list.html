@@ -1,23 +1,45 @@
-{% comment %} ... header ... {% endcomment %}
-<div class="container">
-    <h1 class="page-title">Our Products</h1>
-    <div class="product-grid">
-        {% for product in products %}
-        <div class="product-card">
-            <div style="font-size: 4rem;">🍲</div> {# Generic emoji #}
-            {# CHANGED: Use product.title #}
-            <h2>{{ product.title }}</h2>
-            {# REMOVED: product.unit doesn't exist #}
-            <div class="price">₹{{ product.price }}</div>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Products - Rajura Misal Bhandaar</title>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🍲 Rajura Misal Bhandaar</div>
+            <div class="nav-links">
+                <a href="{% url 'listing:list_materials' %}" class="active">Products</a>
+                <a href="{% url 'listing:cart_detail' %}" class="cart-icon">
+                    🛒 <span class="cart-count">{{ cart|length }}</span>
+                </a>
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+        </nav>
+    </header>
 
-            <form action="{% url 'listing:cart_add' product.id %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn">Add to Cart</button>
-            </form>
+    <div class="container">
+        <h1 class="page-title">Our Products</h1>
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <div style="font-size: 4rem;">🍲</div>
+                <h2>{{ product.title }}</h2>
+                <div class="price">₹{{ product.price }}</div>
+                <form action="{% url 'listing:cart_add' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">Add to Cart</button>
+                </form>
+            </div>
+            {% empty %}
+            <p>No products available yet. Please add some in the admin panel.</p>
+            {% endfor %}
         </div>
-        {% empty %}
-        <p>No products available yet.</p>
-        {% endfor %}
     </div>
-</div>
-{% comment %} ... footer ... {% endcomment %}
+
+</body>
+</html>
