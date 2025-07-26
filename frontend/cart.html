@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart - Rajura Misal Bhandaar</title>
+    <title>Cart</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,7 +19,7 @@
         </div>
     </div>
 
-<header class="header">
+    <header class="header">
         <nav class="nav">
             <div class="logo">Foodies</div>
             <div class="nav-links">
@@ -47,15 +47,56 @@
                 <p>Premium Buyer</p>
                 <p>📍 Mumbai, Maharashtra</p>
             </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">₹8,450</div>
+                    <div class="stat-label">Spent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4.8</div>
+                    <div class="stat-label">Rating</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">Sellers</div>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <div class="profile-action" onclick="editProfile()">
+                    <div class="profile-action-icon">✏️</div>
+                    <div class="profile-action-text">Edit Profile</div>
+                </div>
+                <div class="profile-action" onclick="viewOrders()">
+                    <div class="profile-action-icon">📋</div>
+                    <div class="profile-action-text">Order History</div>
+                </div>
+                <div class="profile-action" onclick="viewFavorites()">
+                    <div class="profile-action-icon">❤️</div>
+                    <div class="profile-action-text">Favorites</div>
+                </div>
+                <div class="profile-action" onclick="settings()">
+                    <div class="profile-action-icon">⚙️</div>
+                    <div class="profile-action-text">Settings</div>
+                </div>
+                <div class="profile-action" onclick="logout()">
+                    <div class="profile-action-icon">🚪</div>
+                    <div class="profile-action-text">Logout</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="page-header">
-            <div class="breadcrumb">Dashboard > Cart</div>
+            <div class="breadcrumb">Home > Cart</div>
             <h1 class="page-title">Shopping Cart</h1>
             <p>Review your items before checkout</p>
-        </div>
-
-        </div>
-        </div>
         </div>
 
         <div class="cart-container">
@@ -111,7 +152,6 @@
     </div>
 
     <script>
-
         // Profile Popup Functions
         function toggleProfilePopup() {
             const popup = document.getElementById('userProfilePopup');
@@ -120,7 +160,6 @@
             popup.classList.toggle('open');
             overlay.classList.toggle('open');
             
-            // Prevent body scroll when popup is open
             document.body.style.overflow = popup.classList.contains('open') ? 'hidden' : 'auto';
         }
 
@@ -156,14 +195,12 @@
 
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
-                // Clear any stored data
                 localStorage.removeItem('cart');
                 localStorage.removeItem('selectedFoodType');
                 localStorage.removeItem('selectedVendor');
                 localStorage.removeItem('isLoggedIn');
                 localStorage.removeItem('userPhone');
                 
-                // Redirect to login page
                 window.location.href = 'login.html';
             }
         }
@@ -175,28 +212,10 @@
             }
         });
 
-        // Load user data (in a real app, this would come from backend)
-        function loadUserData() {
-            // Simulate loading user data
-            const userData = {
-                name: 'Foodie',
-                type: 'Premium Buyer',
-                location: 'Mumbai, Maharashtra',
-                orders: 12,
-                spent: '₹8,450',
-                rating: 4.8,
-                Sellers: 15
-            };
-            
-            // Update profile info
-            document.querySelector('.profile-info h3').textContent = `Welcome, ${userData.name}!`;
-        }
-
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
         function renderCart() {
             const cartContainer = document.getElementById('cartItems');
-            const cartCount = document.getElementById('cartCount');
             
             if (cart.length === 0) {
                 cartContainer.innerHTML = `
@@ -207,7 +226,6 @@
                         <button class="btn" onclick="continueShopping()">Start Shopping</button>
                     </div>
                 `;
-                cartCount.textContent = '0';
                 updateSummary();
                 return;
             }
@@ -233,7 +251,6 @@
                 </div>
             `).join('');
             
-            updateCartCount();
             updateSummary();
         }
 
@@ -242,12 +259,10 @@
             if (!item) return;
             
             if (change === 0) {
-                // Direct input change
                 const input = event.target;
                 const newQuantity = parseInt(input.value) || 1;
                 item.quantity = Math.max(1, newQuantity);
             } else {
-                // Button click
                 item.quantity = Math.max(1, item.quantity + change);
             }
             
@@ -259,11 +274,6 @@
             cart = cart.filter(item => item.id !== itemId);
             localStorage.setItem('cart', JSON.stringify(cart));
             renderCart();
-        }
-
-        function updateCartCount() {
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cartCount').textContent = totalItems;
         }
 
         function updateSummary() {

@@ -24,7 +24,7 @@
             <div class="logo">Foodies</div>
             <div class="nav-links">
                 <a href="buyerDashboard.html">Home</a>
-                <a href="productSellers.html">Sellers</a>
+                <a href="productSellers.html" class="active">Sellers</a>
                 <a href="products.html">Products</a>
                 <a href="cart.html">Cart</a>
                 <div class="user-profile-icon" onclick="toggleProfilePopup()">👤</div>
@@ -32,8 +32,6 @@
         </nav>
     </header>
 
-  
-    <!-- User Profile Popup -->
     <div class="popup-overlay" id="popupOverlay" onclick="closeProfilePopup()"></div>
     <div class="user-profile-popup" id="userProfilePopup">
         <div class="popup-header">
@@ -111,7 +109,6 @@
 
     <script>
 
-        // Profile Popup Functions
         function toggleProfilePopup() {
             const popup = document.getElementById('userProfilePopup');
             const overlay = document.getElementById('popupOverlay');
@@ -119,7 +116,6 @@
             popup.classList.toggle('open');
             overlay.classList.toggle('open');
             
-            // Prevent body scroll when popup is open
             document.body.style.overflow = popup.classList.contains('open') ? 'hidden' : 'auto';
         }
 
@@ -132,7 +128,6 @@
             document.body.style.overflow = 'auto';
         }
 
-        // Profile Action Functions
         function editProfile() {
             alert('Edit Profile functionality will be implemented here');
             closeProfilePopup();
@@ -173,7 +168,6 @@
         });
 
         function loadUserData() {
-            // Simulate loading user data
             const userData = {
                 name: 'Foodie',
                 type: 'Premium Buyer',
@@ -360,7 +354,6 @@
         }
 
         function viewVendor(vendorId) {
-            // Store selected vendor and redirect to products page
             localStorage.setItem('selectedVendor', vendorId);
             window.location.href = 'products.html';
         }
@@ -383,23 +376,20 @@
             }
         }
 
-        // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
             loadSelectedCategory();
             renderSellers(Sellers);
             
-            // Add filter event listeners
             document.getElementById('searchInput').addEventListener('input', filterSellers);
             document.getElementById('sortSelect').addEventListener('change', filterSellers);
             document.getElementById('priceFilter').addEventListener('change', filterSellers);
             document.getElementById('vendorType').addEventListener('change', filterSellers);
 
-            // Initialize Sellers page
+
             loadSellers();
             setActiveNavLink();
         });
 
-        // Set active navigation link
         function setActiveNavLink() {
             const currentPage = window.location.pathname.split('/').pop() || 'productSellers.html';
             const navLinks = document.querySelectorAll('.nav-links a');
