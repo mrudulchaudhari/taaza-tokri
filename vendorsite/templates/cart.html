@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Rajura Misal Bhandaar</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🍲 Rajura Misal Bhandaar</div>
+            <div class="nav-links">
+                <a href="{% url 'listing:list_materials' %}">Products</a>
+                <a href="{% url 'listing:cart_detail' %}" class="cart-icon">
+                    🛒 <span class="cart-count">{{ cart|length }}</span>
+                </a>
+                <a href="#">Checkout</a>
+                <a href="#">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="breadcrumb">Dashboard > Cart</div>
+            <h1 class="page-title">Shopping Cart</h1>
+        </div>
+
+        <div class="cart-container">
+            <div class="cart-items">
+                {% if cart %}
+                    {% for item in cart %}
+                        {% with product=item.product %}
+                        <div class="cart-item">
+                            {# CHANGED: Replaced non-existent emoji field with a static one #}
+                            <div class="item-image">🍲</div>
+                            <div class="item-details">
+                                {# CHANGED: Use product.title from your model #}
+                                <div class="item-name">{{ product.title }}</div>
+                                {# REMOVED: product.unit does not exist in your model #}
+                                <div class="item-price">₹{{ item.price }}</div>
+                            </div>
+                            <div class="item-quantity">
+                                <form action="{% url 'listing:cart_update' product.id %}" method="post" class="quantity-controls">
+                                    {% csrf_token %}
+                                    <input type="number" class="quantity-input" name="quantity" value="{{ item.quantity }}" min="1" onchange="this.form.submit()">
+                                </form>
+                            </div>
+                            <div class="item-total">₹{{ item.total_price }}</div>
+                            <a href="{% url 'listing:cart_remove' product.id %}" class="remove-btn">🗑️</a>
+                        </div>
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h3>Your cart is empty</h3>
+                        <a href="{% url 'listing:list_materials' %}" class="btn">Start Shopping</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if cart %}
+            <div class="cart-summary">
+                <div class="summary-title">Order Summary</div>
+                <div class="delivery-info">
+                    <div class="delivery-title">🚚 Delivery Information</div>
+                    <div>📍 Mumbai, Maharashtra</div>
+                </div>
+                {% if cart.get_subtotal_price >= 500 %}
+                <div class="savings-badge">
+                    💰 You saved ₹50 on your order!
+                </div>
+                {% endif %}
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>₹{{ cart.get_subtotal_price }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <span>₹{{ cart.get_delivery_fee }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Discount</span>
+                    <span>-₹{{ cart.get_discount }}</span>
+                </div>
+                <div class="summary-row summary-total">
+                    <span>Total</span>
+                    <span>₹{{ cart.get_total_price }}</span>
+                </div>
+                <div style="margin-top: 24px;">
+                    <a href="#" class="btn">Proceed to Checkout</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings  # to reference AUTH_USER_MODEL
 
 class Supplier(models.Model):
     """
@@ -18,6 +19,13 @@ class Supplier(models.Model):
         ('BEVERAGES', 'Beverages'),
         ('OTHER', 'Other'),
     ]
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='supplier_profile',
+        help_text="Link to the user profile for this supplier."
+    )
 
     name = models.CharField(max_length=255, help_text="The legal name of the supplier.")
     contact_person = models.CharField(max_length=255, blank=True, null=True, help_text="The primary contact person.")
