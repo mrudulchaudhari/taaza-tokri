@@ -6,4 +6,13 @@ urlpatterns = [
     path('register/supplier/', views.register_supplier, name='register_supplier'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    # URL for the link on your login page ("Register here")
+    path('signup/', views.signup_page_view, name='signup_page'),
+    
+    # URL that the signup form POSTs to
+    path('signup/start/', views.signup_start, name='signup_start'),
+
+    # URLs for your final, detailed registration forms
+    path('register/vendor/', views.register_vendor, name='register_vendor'),
+    path('register/supplier/', views.register_supplier, name='register_supplier'),
 ]

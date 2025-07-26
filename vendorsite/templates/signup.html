@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up - Buyer or Seller</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-container {
+      background-color: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+    }
+
+    .logo {
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #fc8a06;
+      font-weight: bold;
+    }
+
+    .role-selection {
+      margin-bottom: 30px;
+    }
+
+    .role-selection h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: #333;
+    }
+
+    .role-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .role-button {
+      flex: 1;
+      padding: 15px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.3s ease;
+    }
+
+    .role-button.buyer {
+      background-color: #27ae60;
+    }
+
+    .role-button.seller {
+      background-color: #f9c589;
+      color: #7a4f00;
+    }
+
+    .role-button.selected {
+      box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.15);
+      transform: scale(1.05);
+    }
+
+    .login-header {
+      margin-bottom: 20px;
+      font-size: 20px;
+      color: #555;
+      display: none; /* Hidden initially */
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      text-align: left;
+      display: none; /* Hidden initially */
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .phone-input {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .country-code {
+      padding: 12px 15px;
+      background-color: #f5f5f5;
+      border-right: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    .form-group input {
+      flex: 1;
+      padding: 12px 15px;
+      border: none;
+      font-size: 16px;
+    }
+
+    .form-group input:focus {
+      outline: none;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 14px;
+      background-color: #fc8a06;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+      display: none; /* Hidden initially */
+    }
+
+    .login-button:hover {
+      background-color: #e67a00;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">🍲 Rajura Misal Bhandaar</div>
+
+    <div class="role-selection">
+      <h2>Are you a Buyer or a Seller?</h2>
+      <div class="role-buttons">
+        <div id="buyerBtn" class="role-button buyer">Buyer</div>
+        <div id="sellerBtn" class="role-button seller">Seller</div>
+      </div>
+    </div>
+
+    <div class="login-header" id="loginHeader">Enter your phone to continue</div>
+
+    <!-- This form submits to your 'signup_start' view -->
+    <form id="signupForm" method="post" action="{% url 'signup_start' %}">
+      {% csrf_token %}
+      <!-- This hidden input will store the selected role -->
+      <input type="hidden" name="role" id="roleInput">
+
+      <div class="form-group" id="phoneGroup">
+        <label for="phone">Phone Number</label>
+        <div class="phone-input">
+          <span class="country-code">+91</span>
+          <!-- The name 'phone_number' matches what your view expects -->
+          <input type="tel" id="phone" name="phone_number" placeholder="Enter your phone number" required pattern="[0-9]{10}" title="10-digit phone number" />
+        </div>
+      </div>
+
+      <button type="submit" id="signupBtn" class="login-button">Continue</button>
+    </form>
+  </div>
+
+  <script>
+    const buyerBtn = document.getElementById('buyerBtn');
+    const sellerBtn = document.getElementById('sellerBtn');
+    const loginHeader = document.getElementById('loginHeader');
+    const signupForm = document.getElementById('signupForm');
+    const phoneGroup = document.getElementById('phoneGroup');
+    const signupBtn = document.getElementById('signupBtn');
+    const roleInput = document.getElementById('roleInput');
+
+    let selectedRole = null;
+
+    function showPhoneForm() {
+      loginHeader.style.display = 'block';
+      phoneGroup.style.display = 'block';
+      signupBtn.style.display = 'block';
+    }
+
+    function selectRole(role) {
+      selectedRole = role;
+      // Set the hidden input's value to 'buyer' or 'seller'
+      roleInput.value = role; 
+
+      if (role === 'buyer') {
+        buyerBtn.classList.add('selected');
+        sellerBtn.classList.remove('selected');
+      } else if (role === 'seller') {
+        sellerBtn.classList.add('selected');
+        buyerBtn.classList.remove('selected');
+      }
+      showPhoneForm();
+    }
+
+    buyerBtn.addEventListener('click', () => selectRole('buyer'));
+    sellerBtn.addEventListener('click', () => selectRole('seller'));
+
+    signupForm.addEventListener('submit', function (e) {
+      // Basic client-side validation before submitting
+      if (!selectedRole) {
+        e.preventDefault(); // Stop the form from submitting
+        alert('Please select whether you are a Buyer or a Seller.');
+      }
+    });
+  </script>
+</body>
+</html>
