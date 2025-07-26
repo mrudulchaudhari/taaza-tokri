@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order History</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #EDE8D0;
+      color: #333;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background-color: #648364;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-top: 40px;
+      margin-bottom: 15px;
+      color: #648364;
+      border-bottom: 2px solid #648364;
+      padding-bottom: 6px;
+      width: fit-content;
+    }
+
+    .container {
+      padding: 30px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .section {
+      margin-bottom: 50px;
+    }
+
+    .order-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px 25px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      margin-top: 15px;
+    }
+
+    .order-card h4 {
+      margin: 0 0 10px;
+    }
+
+    .order-card p {
+      margin: 6px 0;
+    }
+
+    select {
+      padding: 7px 10px;
+      margin: 12px 0 18px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    @media (max-width: 600px) {
+      .order-card {
+        font-size: 14px;
+        padding: 15px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      header h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Seller Dashboard - Order History</h1>
+  </header>
+
+  <div class="container">
+
+    <!-- BACKEND: Loop through and display delivered orders here -->
+    <div class="section" id="delivered-orders">
+      <h2>Delivered Orders</h2>
+
+      <div class="order-card">
+        <h4>Order #12347</h4>
+        <p><strong>Item:</strong> Oil 2 Litres</p>
+        <p><strong>Customer:</strong> Ravi Kumar</p>
+        <p><strong>Date:</strong> 23 July 2025</p>
+        <p><strong>Status:</strong> Delivered</p>
+      </div>
+    </div>
+
+    <!-- BACKEND: Loop through and display shipped orders here -->
+    <div class="section" id="shipped-orders">
+      <h2>Shipped Orders</h2>
+
+      <div class="order-card">
+        <h4>Order #12346</h4>
+        <p><strong>Item:</strong> Masala 500g</p>
+        <p><strong>Customer:</strong> Seema Jain</p>
+        <p><strong>Date:</strong> 24 July 2025</p>
+        <p><strong>Status:</strong> In Transit</p>
+      </div>
+    </div>
+
+    <!-- BACKEND: Loop through and display cancelled orders here -->
+    <div class="section" id="cancelled-orders">
+      <h2>Cancelled by Seller</h2>
+
+      <div class="order-card">
+        <h4>Order #12345</h4>
+        <p><strong>Item:</strong> Pav 1kg</p>
+        <p><strong>Customer:</strong> Ramesh Gupta</p>
+        <p><strong>Date:</strong> 25 July 2025</p>
+        <p><strong>Reason:</strong> Out of stock</p>
+      </div>
+    </div>
+
+    <!-- Order Completion Summary Section -->
+    <div class="section" id="completed-summary">
+      <h2>Orders Completed</h2>
+
+      <label for="timeFilter"><strong>View Summary:</strong></label>
+      <select id="timeFilter" onchange="updateSummary()">
+        <option value="month">Last 1 Month</option>
+        <option value="year">Last 1 Year</option>
+        <option value="all">All Time</option>
+      </select>
+
+      <!-- BACKEND: Dynamically update this card with data based on selected filter -->
+      <div class="order-card" id="summaryCard">
+        <p><strong>Total Completed Orders:</strong> <span id="orderCount">25</span></p>
+        <p><strong>Total Revenue:</strong> ₹ <span id="totalRevenue">12,000</span></p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Dummy data for demonstration only (BACKEND: Replace with real-time values)
+    const stats = {
+      month: { orders: 5, revenue: 2400 },
+      year: { orders: 18, revenue: 9800 },
+      all: { orders: 25, revenue: 12000 }
+    };
+
+    function updateSummary() {
+      const value = document.getElementById("timeFilter").value;
+      const data = stats[value];
+
+      // Update values in the DOM
+      document.getElementById("orderCount").innerText = data.orders;
+      document.getElementById("totalRevenue").innerText = data.revenue;
+    }
+  </script>
+</body>
+</html>
