@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .transparent-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 2.5rem 2rem 2rem 2rem;
+            margin: 0 auto;
+        }
+        .user-type-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .user-type-btn {
+            flex: 1;
+            padding: 1rem 0;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .user-type-btn.active, .user-type-btn:focus {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 500px; margin-top: 3rem;">
+        <div class="transparent-card">
+            <h2 class="text-center">Complete Your Registration</h2>
+            <!-- User type toggle buttons removed -->
+            <!-- Buyer Registration Form -->
+            <form id="buyerForm" class="form-section">
+                <div class="form-group">
+                    <label for="buyerName" class="form-label">Full Name</label>
+                    <input type="text" id="buyerName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="buyerEmail" class="form-label">Email</label>
+                    <input type="email" id="buyerEmail" class="form-input" >
+                </div>
+                <div class="form-group">
+                    <label for="buyerPhone" class="form-label">Phone Number</label>
+                    <input type="tel" id="buyerPhone" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="shopName" class="form-label">Shop Name</label>
+                    <input type="text" id="shopName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="shopAddress" class="form-label">Shop Address</label>
+                    <textarea id="shopAddress" class="form-input" rows="2" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Register as Buyer</button>
+            </form>
+            <!-- Seller Registration Form -->
+            <form id="sellerForm" class="form-section" style="display: none;">
+                <div class="form-group">
+                    <label for="sellerName" class="form-label">Full Name</label>
+                    <input type="text" id="sellerName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="sellerEmail" class="form-label">Email</label>
+                    <input type="email" id="sellerEmail" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="sellerPhone" class="form-label">Phone Number</label>
+                    <input type="tel" id="sellerPhone" class="form-input" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Register as Seller</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        const buyerForm = document.getElementById('buyerForm');
+        const sellerForm = document.getElementById('sellerForm');
+
+        // On page load, show the correct form based on userType in localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            let userType = localStorage.getItem('userType');
+            if (!userType) userType = 'buyer'; // default
+            if (userType === 'seller') {
+                buyerForm.style.display = 'none';
+                sellerForm.style.display = '';
+            } else {
+                buyerForm.style.display = '';
+                sellerForm.style.display = 'none';
+            }
+        });
+
+        // Redirect to dashboard after registration (simulate)
+        buyerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            window.location.href = 'buyerDashboard.html';
+        });
+        sellerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            window.location.href = 'sellerDashboard.html';
+        });
+    </script>
+</body>
+</html>

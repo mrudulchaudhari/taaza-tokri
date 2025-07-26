@@ -8,14 +8,27 @@
     
 </head>
 <body>
+    <!-- Location Display Bar -->
+    <div class="location-bar">
+        <div class="location-content">
+            <span class="location-icon">📍</span>
+            <span class="location-text">Mumbai, Maharashtra</span>
+            <div class="location-weather">
+                <span>🌤️</span>
+                <span>28°C</span>
+            </div>
+        </div>
+    </div>
+
     <header class="header">
         <nav class="nav">
-            <div class="logo">🍲 Rajura Misal Bhandaar</div>
+            <div class="logo">Foodies</div>
             <div class="nav-links">
-                <a href="buyerDashboard.html">Dashboard</a>
+                <a href="buyerDashboard.html" class="active">Home</a>
+                <a href="productSellers.html">Sellers</a>
                 <a href="products.html">Products</a>
                 <a href="cart.html">Cart</a>
-                <a href="checkout.html">Checkout</a>
+                
                 <div class="user-profile-icon" onclick="toggleProfilePopup()">👤</div>
             </div>
         </nav>
@@ -51,7 +64,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">15</div>
-                    <div class="stat-label">Vendors</div>
+                    <div class="stat-label">Sellers</div>
                 </div>
             </div>
 
@@ -85,19 +98,19 @@
             <!-- Main Content -->
             <div class="main-content">
                 <h2 class="section-title">Welcome to Your Dashboard!</h2>
-                <p style="color: var(--gray); margin-bottom: var(--space-lg);">Manage your food business and find the best vendors for fresh ingredients</p>
+                <p style="color: var(--gray); margin-bottom: var(--space-lg);">Manage your food business and find the best Sellers for fresh ingredients</p>
                 
                 <div class="quick-actions">
-                    <div class="action-card" onclick="window.location.href='vendors.html'">
+                    <div class="action-card" onclick="window.location.href='productSellers.html'">
                         <div class="action-icon">🏪</div>
-                        <h4>Find Vendors</h4>
+                        <h4>Find Sellers</h4>
                         <p>Discover trusted suppliers for your ingredients</p>
                     </div>
                     
                     <div class="action-card" onclick="window.location.href='products.html'">
                         <div class="action-icon">🛍️</div>
                         <h4>Browse Products</h4>
-                        <p>Shop fresh ingredients from your favorite vendors</p>
+                        <p>Shop fresh ingredients from your favorite Sellers</p>
                     </div>
                     
                     <div class="action-card" onclick="window.location.href='cart.html'">
@@ -273,7 +286,7 @@
                 orders: 12,
                 spent: '₹8,450',
                 rating: 4.8,
-                vendors: 15
+                Sellers: 15
             };
             
             // Update profile info
@@ -283,7 +296,21 @@
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             loadUserData();
+            setActiveNavLink();
         });
+
+        // Set active navigation link
+        function setActiveNavLink() {
+            const currentPage = window.location.pathname.split('/').pop() || 'buyerDashboard.html';
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        }
     </script>
 </body>
 </html>

@@ -6,8 +6,6 @@
     <title>What Do You Sell?</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        
-
         @media (max-width: 768px) {
             .welcome-title {
                 font-size: 2rem;
@@ -41,7 +39,7 @@
 
     <div class="welcome-section">
         <div class="container">
-            <h1 class="welcome-title">Welcome to Rajura Misal Bhandaar!</h1>
+            <h1 class="welcome-title">Welcome to Foodsy</h1>
             <p class="welcome-subtitle">Let's get started by understanding your business</p>
         </div>
     </div>
@@ -56,7 +54,7 @@
         <div class="selection-header">
             <h2 class="selection-title">What type of food do you sell?</h2>
             <p class="selection-description">
-                Select your primary food category to help us find the best vendors and ingredients for your business. 
+                Select your primary food category to help us find the best Sellers and ingredients for your business. 
                 You can always change this later in your settings.
             </p>
         </div>
@@ -65,91 +63,66 @@
             <div class="food-category" onclick="selectCategory('misal')">
                 <span class="category-icon">🍲</span>
                 <h3 class="category-name">Misal Pav</h3>
-                <p class="category-description">
-                    Traditional Maharashtrian street food with spicy curry and soft bread
-                </p>
-                <ul class="category-features">
-                    <li>Fresh vegetables and spices</li>
-                    <li>Quality bread and pav</li>
-                    <li>Authentic masalas</li>
-                    <li>Fresh garnishes</li>
-                </ul>
+                
+                
             </div>
 
             <div class="food-category" onclick="selectCategory('vada')">
                 <span class="category-icon">🥟</span>
                 <h3 class="category-name">Vada Pav</h3>
-                <p class="category-description">
-                    Mumbai's favorite street food - spicy potato fritters in bread
-                </p>
-                <ul class="category-features">
-                    <li>Fresh potatoes and bread</li>
-                    <li>Spicy chutneys</li>
-                    <li>Quality oil for frying</li>
-                    <li>Fresh green chilies</li>
-                </ul>
+                
+                
             </div>
 
             <div class="food-category" onclick="selectCategory('chaat')">
                 <span class="category-icon">🥗</span>
                 <h3 class="category-name">Chaat & Snacks</h3>
-                <p class="category-description">
-                    Spicy and tangy street food with various toppings and chutneys
-                </p>
-                <ul class="category-features">
-                    <li>Fresh vegetables and fruits</li>
-                    <li>Multiple chutneys</li>
-                    <li>Sev and papdi</li>
-                    <li>Yogurt and spices</li>
-                </ul>
+                
+                
             </div>
 
             <div class="food-category" onclick="selectCategory('sweets')">
                 <span class="category-icon">🍰</span>
                 <h3 class="category-name">Sweets & Desserts</h3>
-                <p class="category-description">
-                    Traditional Indian sweets and modern desserts
-                </p>
-                <ul class="category-features">
-                    <li>Milk and dairy products</li>
-                    <li>Nuts and dry fruits</li>
-                    <li>Quality sugar and ghee</li>
-                    <li>Food colors and flavors</li>
-                </ul>
+                
+                
             </div>
 
             <div class="food-category" onclick="selectCategory('beverages')">
                 <span class="category-icon">🥤</span>
                 <h3 class="category-name">Beverages</h3>
-                <p class="category-description">
-                    Refreshing drinks, juices, and traditional beverages
-                </p>
-                <ul class="category-features">
-                    <li>Fresh fruits and vegetables</li>
-                    <li>Dairy products</li>
-                    <li>Spices for masala drinks</li>
-                    <li>Quality syrups</li>
-                </ul>
+                
+                
             </div>
 
             <div class="food-category" onclick="selectCategory('general')">
                 <span class="category-icon">🛒</span>
                 <h3 class="category-name">General Food Store</h3>
-                <p class="category-description">
-                    Multiple food categories and ingredients for various dishes
-                </p>
-                <ul class="category-features">
-                    <li>All types of ingredients</li>
-                    <li>Grains and pulses</li>
-                    <li>Spices and condiments</li>
-                    <li>Fresh produce</li>
-                </ul>
+                
+                
+            </div>
+            <div class="food-category" onclick="selectCategory('general')">
+                <span class="category-icon">🛒</span>
+                <h3 class="category-name">General Food Store</h3>
+                
+                
+            </div>
+            <div class="food-category" onclick="selectCategory('general')">
+                <span class="category-icon">🛒</span>
+                <h3 class="category-name">General Food Store</h3>
+                
+            </div>
+            <div class="food-category" onclick="selectCategory('sweets')">
+                <span class="category-icon">🍰</span>
+                <h3 class="category-name">Sweets & Desserts</h3>
+                
+                
             </div>
         </div>
 
         <div class="selection-actions">
-            <button class="btn-primary" id="continueBtn" onclick="continueToVendors()" disabled>
-                Continue to Find Vendors
+            <button class="btn-primary" id="continueBtn" onclick="continueToSellers()" disabled>
+                Continue to Find Sellers
             </button>
             <button class="btn-secondary" onclick="skipSelection()">
                 Skip for Now
@@ -179,15 +152,15 @@
             localStorage.setItem('selectedFoodType', category);
         }
 
-        function continueToVendors() {
+        function continueToSellers() {
             if (!selectedCategory) {
                 alert('Please select a food category first');
                 return;
             }
             
-            // Store the selection and redirect to vendors page
+            // Store the selection and redirect to Sellers page
             localStorage.setItem('selectedFoodType', selectedCategory);
-            window.location.href = 'vendors.html';
+            window.location.href = 'productSellers.html';
         }
 
         function skipSelection() {
@@ -213,7 +186,7 @@
         // Add keyboard navigation
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Enter' && selectedCategory) {
-                continueToVendors();
+                continueToSellers();
             }
         });
     </script>
