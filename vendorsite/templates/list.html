@@ -1,0 +1,23 @@
+{% comment %} ... header ... {% endcomment %}
+<div class="container">
+    <h1 class="page-title">Our Products</h1>
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <div style="font-size: 4rem;">🍲</div> {# Generic emoji #}
+            {# CHANGED: Use product.title #}
+            <h2>{{ product.title }}</h2>
+            {# REMOVED: product.unit doesn't exist #}
+            <div class="price">₹{{ product.price }}</div>
+
+            <form action="{% url 'listing:cart_add' product.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn">Add to Cart</button>
+            </form>
+        </div>
+        {% empty %}
+        <p>No products available yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% comment %} ... footer ... {% endcomment %}

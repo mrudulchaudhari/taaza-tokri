@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Vendor Registration</h2>
+<form method="post">
+    {% csrf_token %}
+    Email: <input type="email" name="email"><br>
+    Phone Number: <input type="text" name="phone_number"><br>
+    Password: <input type="password" name="password"><br>
+    Name: <input type="text" name="name"><br>
+    City: <input type="text" name="city"><br>
+    Address: <input type="text" name="address"><br>
+    <button type="submit">Register</button>
+</form>
+{% endblock %}
