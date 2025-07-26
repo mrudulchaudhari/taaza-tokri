@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Seller Information</title>
+  <style>
+    :root {
+      --primary: #648364;
+      --background: #f2f2f2;
+      --white: #ffffff;
+      --gray: #ddd;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--background);
+    }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border: 1px solid var(--gray);
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    button:hover {
+      background-color: #4f6d4f;
+    }
+
+    @media (max-width: 600px) {
+      .form-container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Seller Information Form</h1>
+  </header>
+
+  <div class="form-container">
+    <h2>Register as a Seller</h2>
+    <form id="sellerForm">
+      <div class="form-group">
+        <label for="sellerName">Seller Name *</label>
+        <input type="text" id="sellerName" name="sellerName" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email (Optional)</label>
+        <input type="email" id="email" name="email" />
+      </div>
+
+      <div class="form-group">
+        <label for="city">City *</label>
+        <input type="text" id="city" name="city" required />
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address *</label>
+        <textarea id="address" name="address" rows="3" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category *</label>
+        <select id="category" name="category" required>
+          <option value="">-- Select Category --</option>
+          <option value="vegetables">Vegetables</option>
+          <option value="fruits">Fruits</option>
+          <option value="masala">Masala</option>
+          <option value="pav">Pav / Bakery</option>
+          <option value="grains">Grains / Pulses</option>
+          <option value="others">Others</option>
+        </select>
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('sellerForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      alert("Seller details submitted successfully!");
+      // Here you can call a POST API or redirect as needed
+    });
+  </script>
+
+</body>
+</html>
