@@ -111,14 +111,14 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         blank=True,
                         help_text="Select the types of food this vendor sells.",
-                        related_name="vendors",
+                        related_name="Sellers",
                         to="vendor.cuisine",
                     ),
                 ),
             ],
             options={
                 "verbose_name": "Vendor",
-                "verbose_name_plural": "Vendors",
+                "verbose_name_plural": "Sellers",
                 "ordering": ["name"],
             },
         ),

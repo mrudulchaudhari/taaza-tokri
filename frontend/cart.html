@@ -7,26 +7,55 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="header">
+    <!-- Location Display Bar -->
+    <div class="location-bar">
+        <div class="location-content">
+            <span class="location-icon">📍</span>
+            <span class="location-text">Mumbai, Maharashtra</span>
+            <div class="location-weather">
+                <span>🌤️</span>
+                <span>28°C</span>
+            </div>
+        </div>
+    </div>
+
+<header class="header">
         <nav class="nav">
-            <div class="logo">🍲 Rajura Misal Bhandaar</div>
+            <div class="logo">Foodies</div>
             <div class="nav-links">
-                <a href="buyerDashboard.html">Dashboard</a>
+                <a href="buyerDashboard.html">Home</a>
+                <a href="productSellers.html">Sellers</a>
                 <a href="products.html">Products</a>
-                <a href="cart.html" class="cart-icon">
-                    🛒 <span class="cart-count" id="cartCount">0</span>
-                </a>
-                <a href="checkout.html">Checkout</a>
-                <a href="login.html">Logout</a>
+                <a href="cart.html" class="active">Cart</a>
+                
+                <div class="user-profile-icon" onclick="toggleProfilePopup()">👤</div>
             </div>
         </nav>
     </header>
 
+    <!-- User Profile Popup -->
+    <div class="popup-overlay" id="popupOverlay" onclick="closeProfilePopup()"></div>
+    <div class="user-profile-popup" id="userProfilePopup">
+        <div class="popup-header">
+            <div class="popup-title">User Profile</div>
+            <button class="close-popup" onclick="closeProfilePopup()">×</button>
+        </div>
+        <div class="popup-content">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-info">
+                <h3>Welcome, Foodie!</h3>
+                <p>Premium Buyer</p>
+                <p>📍 Mumbai, Maharashtra</p>
+            </div>
     <div class="container">
         <div class="page-header">
             <div class="breadcrumb">Dashboard > Cart</div>
             <h1 class="page-title">Shopping Cart</h1>
             <p>Review your items before checkout</p>
+        </div>
+
+        </div>
+        </div>
         </div>
 
         <div class="cart-container">
@@ -82,6 +111,87 @@
     </div>
 
     <script>
+
+        // Profile Popup Functions
+        function toggleProfilePopup() {
+            const popup = document.getElementById('userProfilePopup');
+            const overlay = document.getElementById('popupOverlay');
+            
+            popup.classList.toggle('open');
+            overlay.classList.toggle('open');
+            
+            // Prevent body scroll when popup is open
+            document.body.style.overflow = popup.classList.contains('open') ? 'hidden' : 'auto';
+        }
+
+        function closeProfilePopup() {
+            const popup = document.getElementById('userProfilePopup');
+            const overlay = document.getElementById('popupOverlay');
+            
+            popup.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Profile Action Functions
+        function editProfile() {
+            alert('Edit Profile functionality will be implemented here');
+            closeProfilePopup();
+        }
+
+        function viewOrders() {
+            alert('Order History functionality will be implemented here');
+            closeProfilePopup();
+        }
+
+        function viewFavorites() {
+            alert('Favorites functionality will be implemented here');
+            closeProfilePopup();
+        }
+
+        function settings() {
+            alert('Settings functionality will be implemented here');
+            closeProfilePopup();
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear any stored data
+                localStorage.removeItem('cart');
+                localStorage.removeItem('selectedFoodType');
+                localStorage.removeItem('selectedVendor');
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userPhone');
+                
+                // Redirect to login page
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Close popup when pressing Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeProfilePopup();
+            }
+        });
+
+        // Load user data (in a real app, this would come from backend)
+        function loadUserData() {
+            // Simulate loading user data
+            const userData = {
+                name: 'Foodie',
+                type: 'Premium Buyer',
+                location: 'Mumbai, Maharashtra',
+                orders: 12,
+                spent: '₹8,450',
+                rating: 4.8,
+                Sellers: 15
+            };
+            
+            // Update profile info
+            document.querySelector('.profile-info h3').textContent = `Welcome, ${userData.name}!`;
+        }
+
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
         function renderCart() {
@@ -183,7 +293,21 @@
         // Initialize cart
         document.addEventListener('DOMContentLoaded', function() {
             renderCart();
+            setActiveNavLink();
         });
+
+        // Set active navigation link
+        function setActiveNavLink() {
+            const currentPage = window.location.pathname.split('/').pop() || 'cart.html';
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        }
     </script>
 </body>
 </html> 

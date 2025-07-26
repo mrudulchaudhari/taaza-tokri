@@ -48,4 +48,4 @@ class Vendor(models.Model):
     class Meta:
         ordering = ['name']
         verbose_name = "Vendor"
-        verbose_name_plural = "Vendors"
+        verbose_name_plural = "Sellers"

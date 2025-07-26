@@ -3,34 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vendors - Rajura Misal Bhandaar</title>
+    <title>Sellers - Rajura Misal Bhandaar</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Location Display Bar -->
+    <div class="location-bar">
+        <div class="location-content">
+            <span class="location-icon">📍</span>
+            <span class="location-text">Mumbai, Maharashtra</span>
+            <div class="location-weather">
+                <span>🌤️</span>
+                <span>28°C</span>
+            </div>
+        </div>
+    </div>
+
     <header class="header">
         <nav class="nav">
-            <div class="logo">🍲 Rajura Misal Bhandaar</div>
+            <div class="logo">Foodies</div>
             <div class="nav-links">
-                <a href="buyerDashboard.html">Dashboard</a>
+                <a href="buyerDashboard.html">Home</a>
+                <a href="productSellers.html" class="active">Sellers</a>
                 <a href="products.html">Products</a>
                 <a href="cart.html">Cart</a>
-                <a href="checkout.html">Checkout</a>
-                <a href="login.html">Logout</a>
+                <div class="user-profile-icon" onclick="toggleProfilePopup()">👤</div>
             </div>
         </nav>
     </header>
 
+    <!-- User Profile Popup -->
+    <div class="popup-overlay" id="popupOverlay" onclick="closeProfilePopup()"></div>
+    <div class="user-profile-popup" id="userProfilePopup">
+        <div class="popup-header">
+            <div class="popup-title">User Profile</div>
+            <button class="close-popup" onclick="closeProfilePopup()">×</button>
+        </div>
+        <div class="popup-content">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-info">
+                <h3>Welcome, Foodie!</h3>
+                <p>Premium Buyer</p>
+                <p>📍 Mumbai, Maharashtra</p>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="page-header">
-            <div class="breadcrumb">Dashboard > Vendors</div>
-            <h1 class="page-title">Find Trusted Vendors</h1>
+            <div class="breadcrumb">Home > Sellers</div>
+            <h1 class="page-title">Find Trusted Sellers</h1>
             <p>Discover the best suppliers for your <span class="selected-category" id="selectedCategory">food business</span></p>
         </div>
 
         <div class="filters-section">
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label class="filter-label">Search Vendors</label>
+                    <label class="filter-label">Search Sellers</label>
                     <div class="search-box">
                         <span class="search-icon">🔍</span>
                         <input type="text" class="search-input" placeholder="Search by name, location..." id="searchInput">
@@ -60,7 +89,7 @@
                 <div class="filter-group">
                     <label class="filter-label">Vendor Type</label>
                     <select class="filter-select" id="vendorType">
-                        <option value="all">All Vendors</option>
+                        <option value="all">All Sellers</option>
                         <option value="trusted">Trusted Only</option>
                         <option value="brand">Branded</option>
                         <option value="local">Local Suppliers</option>
@@ -70,118 +99,143 @@
         </div>
 
         <div class="results-info">
-            <span id="resultsCount">Showing 8 vendors</span>
+            <span id="resultsCount">Showing 8 Sellers</span>
             <span>Filtered by your preferences</span>
         </div>
 
-        <div class="vendors-grid" id="vendorsGrid">
+        <div class="Sellers-grid" id="SellersGrid">
             <!-- Vendor cards will be populated by JavaScript -->
         </div>
     </div>
 
     <script>
         // Sample vendor data
-        const vendors = [
+        const Sellers = [
             {
                 id: 1,
-                name: "Fresh Foods Co.",
-                location: "Andheri, Mumbai",
+                name: "Rajura Misal Bhandaar",
+                location: "Rajura, Maharashtra",
                 rating: 4.8,
                 reviews: 156,
-                badges: ["trusted", "brand"],
-                products: "Fresh vegetables, fruits, dairy",
-                delivery: "Same day delivery",
-                avatar: "🥬"
+                badges: ["trusted", "premium"],
+                products: ["Misal Pav", "Vada Pav", "Chutney"],
+                delivery: "2-4 hours",
+                image: "🍲"
             },
             {
                 id: 2,
-                name: "Spice Paradise",
-                location: "Bandra, Mumbai",
-                rating: 4.9,
+                name: "Fresh Farm Foods",
+                location: "Mumbai, Maharashtra",
+                rating: 4.6,
                 reviews: 89,
-                badges: ["trusted", "premium"],
-                products: "Premium spices, masalas, herbs",
-                delivery: "Next day delivery",
-                avatar: "🌶️"
+                badges: ["trusted", "brand"],
+                products: ["Vegetables", "Fruits", "Dairy"],
+                delivery: "Same day",
+                image: "🥬"
             },
             {
                 id: 3,
-                name: "Local Dairy Farm",
-                location: "Thane, Mumbai",
-                rating: 4.6,
+                name: "Spice Paradise",
+                location: "Pune, Maharashtra",
+                rating: 4.9,
                 reviews: 234,
-                badges: ["trusted"],
-                products: "Fresh milk, curd, paneer",
-                delivery: "Daily delivery",
-                avatar: "🥛"
+                badges: ["trusted", "premium", "brand"],
+                products: ["Spices", "Masalas", "Herbs"],
+                delivery: "1-2 days",
+                image: "🌶️"
             },
             {
                 id: 4,
-                name: "Bread & Bakery",
-                location: "Dadar, Mumbai",
+                name: "Sweet Delights",
+                location: "Nagpur, Maharashtra",
                 rating: 4.7,
                 reviews: 67,
-                badges: ["brand"],
-                products: "Fresh bread, buns, pastries",
-                delivery: "Morning delivery",
-                avatar: "🍞"
+                badges: ["trusted"],
+                products: ["Sweets", "Desserts", "Snacks"],
+                delivery: "Same day",
+                image: "🍰"
             },
             {
                 id: 5,
-                name: "Organic Valley",
-                location: "Powai, Mumbai",
+                name: "Grain Masters",
+                location: "Aurangabad, Maharashtra",
                 rating: 4.5,
                 reviews: 123,
-                badges: ["trusted", "premium"],
-                products: "Organic vegetables, fruits",
-                delivery: "Same day delivery",
-                avatar: "🌱"
+                badges: ["brand"],
+                products: ["Rice", "Wheat", "Pulses"],
+                delivery: "2-3 days",
+                image: "🌾"
             },
             {
                 id: 6,
-                name: "Meat Masters",
-                location: "Kurla, Mumbai",
+                name: "Beverage Corner",
+                location: "Mumbai, Maharashtra",
                 rating: 4.4,
-                reviews: 78,
-                badges: ["trusted"],
-                products: "Fresh meat, chicken, fish",
-                delivery: "Same day delivery",
-                avatar: "🥩"
+                reviews: 45,
+                badges: ["local"],
+                products: ["Tea", "Coffee", "Juices"],
+                delivery: "Same day",
+                image: "🥤"
             },
             {
                 id: 7,
-                name: "Sweet Corner",
-                location: "Ghatkopar, Mumbai",
+                name: "Organic Valley",
+                location: "Pune, Maharashtra",
                 rating: 4.8,
-                reviews: 145,
-                badges: ["brand", "premium"],
-                products: "Traditional sweets, desserts",
-                delivery: "Same day delivery",
-                avatar: "🍰"
+                reviews: 178,
+                badges: ["trusted", "premium"],
+                products: ["Organic Vegetables", "Fruits", "Grains"],
+                delivery: "1-2 days",
+                image: "🥕"
             },
             {
                 id: 8,
-                name: "Beverage Hub",
-                location: "Vikhroli, Mumbai",
+                name: "Local Market Hub",
+                location: "Mumbai, Maharashtra",
                 rating: 4.3,
                 reviews: 92,
-                badges: ["brand"],
-                products: "Soft drinks, juices, tea",
-                delivery: "Same day delivery",
-                avatar: "🥤"
+                badges: ["local"],
+                products: ["Local Produce", "Street Food", "Snacks"],
+                delivery: "Same day",
+                image: "🛒"
             }
         ];
 
-        function renderVendors(vendorsToRender) {
-            const grid = document.getElementById('vendorsGrid');
-            const resultsCount = document.getElementById('resultsCount');
+        let filteredSellers = [...Sellers];
+
+        // Profile Popup Functions
+        function toggleProfilePopup() {
+            const popup = document.getElementById('userProfilePopup');
+            const overlay = document.getElementById('popupOverlay');
             
-            resultsCount.textContent = `Showing ${vendorsToRender.length} vendors`;
+            popup.classList.toggle('open');
+            overlay.classList.toggle('open');
             
-            grid.innerHTML = vendorsToRender.map(vendor => `
-                <div class="vendor-card" onclick="viewVendor(${vendor.id})">
+            document.body.style.overflow = popup.classList.contains('open') ? 'hidden' : 'auto';
+        }
+
+        function closeProfilePopup() {
+            const popup = document.getElementById('userProfilePopup');
+            const overlay = document.getElementById('popupOverlay');
+            
+            popup.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Load and render Sellers
+        function loadSellers() {
+            renderSellers(filteredSellers);
+            updateResultsCount();
+        }
+
+        function renderSellers(SellersToRender) {
+            const SellersGrid = document.getElementById('SellersGrid');
+            
+            SellersGrid.innerHTML = SellersToRender.map(vendor => `
+                <div class="vendor-card" onclick="viewVendorProducts(${vendor.id})">
                     <div class="vendor-header">
-                        <div class="vendor-avatar">${vendor.avatar}</div>
+                        <div class="vendor-avatar">${vendor.image}</div>
                         <div class="vendor-info">
                             <h3>${vendor.name}</h3>
                             <div class="vendor-location">
@@ -191,103 +245,95 @@
                     </div>
                     
                     <div class="vendor-rating">
-                        <div class="stars">${'⭐'.repeat(Math.floor(vendor.rating))}</div>
+                        <div class="stars">★★★★★</div>
                         <span class="rating-text">${vendor.rating} (${vendor.reviews} reviews)</span>
                     </div>
                     
                     <div class="vendor-badges">
-                        ${vendor.badges.map(badge => {
-                            const badgeText = badge.charAt(0).toUpperCase() + badge.slice(1);
-                            return `<span class="badge ${badge}">${badgeText}</span>`;
-                        }).join('')}
+                        ${vendor.badges.map(badge => `<span class="badge ${badge}">${badge.charAt(0).toUpperCase() + badge.slice(1)}</span>`).join('')}
                     </div>
                     
                     <div class="vendor-products">
-                        <div class="products-title">Products:</div>
-                        <div class="products-list">${vendor.products}</div>
+                        <div class="products-title">Popular Products:</div>
+                        <div class="products-list">${vendor.products.join(', ')}</div>
                     </div>
                     
                     <div class="vendor-footer">
                         <div class="delivery-info">🚚 ${vendor.delivery}</div>
-                        <button class="btn">View Products</button>
+                        <button class="btn" onclick="event.stopPropagation(); viewVendorProducts(${vendor.id})">View Products</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function filterVendors() {
+        function updateResultsCount() {
+            document.getElementById('resultsCount').textContent = `Showing ${filteredSellers.length} Sellers`;
+        }
+
+        function filterSellers() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const sortBy = document.getElementById('sortSelect').value;
             const priceFilter = document.getElementById('priceFilter').value;
             const vendorType = document.getElementById('vendorType').value;
             
-            let filtered = vendors.filter(vendor => {
+            filteredSellers = Sellers.filter(vendor => {
                 const matchesSearch = vendor.name.toLowerCase().includes(searchTerm) || 
-                                    vendor.location.toLowerCase().includes(searchTerm) ||
-                                    vendor.products.toLowerCase().includes(searchTerm);
-                
-                const matchesType = vendorType === 'all' || 
-                                  (vendorType === 'trusted' && vendor.badges.includes('trusted')) ||
-                                  (vendorType === 'brand' && vendor.badges.includes('brand')) ||
-                                  (vendorType === 'local' && !vendor.badges.includes('brand'));
+                                    vendor.location.toLowerCase().includes(searchTerm);
+                const matchesType = vendorType === 'all' || vendor.badges.includes(vendorType);
                 
                 return matchesSearch && matchesType;
             });
             
-            // Sort vendors
-            filtered.sort((a, b) => {
-                switch(sortBy) {
-                    case 'rating':
-                        return b.rating - a.rating;
-                    case 'trusted':
-                        return (b.badges.includes('trusted') ? 1 : 0) - (a.badges.includes('trusted') ? 1 : 0);
-                    case 'price':
-                        return a.rating - b.rating; // Simplified price sorting
-                    case 'distance':
-                        return 0; // Would implement actual distance calculation
-                    default:
-                        return 0;
-                }
-            });
+            // Sort Sellers
+            switch(sortBy) {
+                case 'rating':
+                    filteredSellers.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'trusted':
+                    filteredSellers.sort((a, b) => b.badges.includes('trusted') - a.badges.includes('trusted'));
+                    break;
+                case 'price':
+                    filteredSellers.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'distance':
+                    filteredSellers.sort((a, b) => a.location.localeCompare(b.location));
+                    break;
+            }
             
-            renderVendors(filtered);
+            renderSellers(filteredSellers);
+            updateResultsCount();
         }
 
-        function viewVendor(vendorId) {
+        function viewVendorProducts(vendorId) {
             // Store selected vendor and redirect to products page
             localStorage.setItem('selectedVendor', vendorId);
             window.location.href = 'products.html';
         }
 
-        function loadSelectedCategory() {
-            const selectedType = localStorage.getItem('selectedFoodType');
-            const categoryElement = document.getElementById('selectedCategory');
-            
-            if (selectedType) {
-                const categoryNames = {
-                    'misal': 'Misal Pav',
-                    'vada': 'Vada Pav',
-                    'chaat': 'Chaat & Snacks',
-                    'sweets': 'Sweets & Desserts',
-                    'beverages': 'Beverages',
-                    'general': 'General Store'
-                };
-                
-                categoryElement.textContent = categoryNames[selectedType] || 'food business';
-            }
-        }
-
         // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterSellers);
+        document.getElementById('sortSelect').addEventListener('change', filterSellers);
+        document.getElementById('priceFilter').addEventListener('change', filterSellers);
+        document.getElementById('vendorType').addEventListener('change', filterSellers);
+
+        // Initialize Sellers page
         document.addEventListener('DOMContentLoaded', function() {
-            loadSelectedCategory();
-            renderVendors(vendors);
-            
-            // Add filter event listeners
-            document.getElementById('searchInput').addEventListener('input', filterVendors);
-            document.getElementById('sortSelect').addEventListener('change', filterVendors);
-            document.getElementById('priceFilter').addEventListener('change', filterVendors);
-            document.getElementById('vendorType').addEventListener('change', filterVendors);
+            loadSellers();
+            setActiveNavLink();
         });
+
+        // Set active navigation link
+        function setActiveNavLink() {
+            const currentPage = window.location.pathname.split('/').pop() || 'productSellers.html';
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        }
     </script>
 </body>
 </html> 
