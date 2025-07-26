@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Rajura Misal Bhandaar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🍲 Rajura Misal Bhandaar</div>
+            <div class="nav-links">
+                <a href="buyerDashboard.html">Dashboard</a>
+                <a href="products.html">Products</a>
+                <a href="cart.html">Cart</a>
+                <a href="checkout.html">Checkout</a>
+                <a href="login.html">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="breadcrumb">Dashboard > Cart > Checkout</div>
+            <h1 class="page-title">Checkout</h1>
+            <p>Complete your order with delivery and payment details</p>
+        </div>
+
+        <div class="checkout-container">
+            <div class="checkout-form" id="checkoutForm">
+                <div class="form-section">
+                    <h3>Delivery Information</h3>
+                    <div class="delivery-options">
+                        <div class="delivery-option" onclick="selectDelivery('standard')">
+                            <div class="delivery-icon">🚚</div>
+                            <div class="delivery-details">
+                                <h4>Standard Delivery</h4>
+                                <p>2-4 hours delivery time</p>
+                            </div>
+                            <div class="delivery-price">₹50</div>
+                        </div>
+                        <div class="delivery-option" onclick="selectDelivery('express')">
+                            <div class="delivery-icon">⚡</div>
+                            <div class="delivery-details">
+                                <h4>Express Delivery</h4>
+                                <p>1-2 hours delivery time</p>
+                            </div>
+                            <div class="delivery-price">₹100</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Personal Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-input" placeholder="Enter your phone number" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" placeholder="Enter your email address" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">City</label>
+                            <select class="form-select" required>
+                                <option value="">Select your city</option>
+                                <option value="mumbai">Mumbai</option>
+                                <option value="pune">Pune</option>
+                                <option value="nagpur">Nagpur</option>
+                                <option value="aurangabad">Aurangabad</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Delivery Address</label>
+                            <textarea class="form-input" rows="3" placeholder="Enter your complete delivery address" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Pincode</label>
+                            <input type="text" class="form-input" placeholder="Enter pincode" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Payment Method</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method" onclick="selectPayment('cod')">
+                            <div class="payment-icon">💵</div>
+                            <div class="payment-details">
+                                <h4>Cash on Delivery</h4>
+                                <p>Pay when you receive your order</p>
+                            </div>
+                        </div>
+                        <div class="payment-method" onclick="selectPayment('upi')">
+                            <div class="payment-icon">📱</div>
+                            <div class="payment-details">
+                                <h4>UPI Payment</h4>
+                                <p>Pay using UPI apps</p>
+                            </div>
+                        </div>
+                        <div class="payment-method" onclick="selectPayment('card')">
+                            <div class="payment-icon">💳</div>
+                            <div class="payment-details">
+                                <h4>Credit/Debit Card</h4>
+                                <p>Pay using your card</p>
+                            </div>
+                        </div>
+                        <div class="payment-method" onclick="selectPayment('netbanking')">
+                            <div class="payment-icon">🏦</div>
+                            <div class="payment-details">
+                                <h4>Net Banking</h4>
+                                <p>Pay using net banking</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Additional Information</h3>
+                    <div class="form-group">
+                        <label class="form-label">Special Instructions (Optional)</label>
+                        <textarea class="form-input" rows="3" placeholder="Any special delivery instructions..."></textarea>
+                    </div>
+                </div>
+
+                <div style="margin-top: var(--space-xl);">
+                    <button class="btn" onclick="placeOrder()">Place Order</button>
+                    <button class="btn btn-outline" onclick="goBack()" style="margin-left: var(--space-md);">Back to Cart</button>
+                </div>
+            </div>
+
+            <div class="order-summary">
+                <div class="summary-title">Order Summary</div>
+                
+                <div class="order-items" id="orderItems">
+                    <!-- Order items will be populated by JavaScript -->
+                </div>
+
+                <div class="summary-row">
+                    <span class="summary-label">Subtotal</span>
+                    <span class="summary-value" id="subtotal">₹0</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Delivery Fee</span>
+                    <span class="summary-value" id="deliveryFee">₹0</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Discount</span>
+                    <span class="summary-value" id="discount">-₹0</span>
+                </div>
+                
+                <div class="summary-row summary-total">
+                    <span>Total</span>
+                    <span id="total">₹0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let selectedDelivery = 'standard';
+        let selectedPayment = 'cod';
+
+        function renderOrderItems() {
+            const orderItemsContainer = document.getElementById('orderItems');
+            
+            orderItemsContainer.innerHTML = cart.map(item => `
+                <div class="order-item">
+                    <div class="item-info">
+                        <div class="item-image">${item.image}</div>
+                        <div class="item-details">
+                            <h4>${item.name}</h4>
+                            <p>Qty: ${item.quantity} × ₹${item.price}</p>
+                        </div>
+                    </div>
+                    <div class="item-total">₹${item.price * item.quantity}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateSummary() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryFee = selectedDelivery === 'express' ? 100 : 50;
+            const discount = subtotal >= 500 ? 50 : 0;
+            const total = subtotal + deliveryFee - discount;
+            
+            document.getElementById('subtotal').textContent = `₹${subtotal}`;
+            document.getElementById('deliveryFee').textContent = `₹${deliveryFee}`;
+            document.getElementById('discount').textContent = `-₹${discount}`;
+            document.getElementById('total').textContent = `₹${total}`;
+        }
+
+        function selectDelivery(type) {
+            selectedDelivery = type;
+            
+            // Update UI
+            document.querySelectorAll('.delivery-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            updateSummary();
+        }
+
+        function selectPayment(type) {
+            selectedPayment = type;
+            
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function validateForm() {
+            const requiredFields = document.querySelectorAll('input[required], select[required], textarea[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#dc3545';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#ddd';
+                }
+            });
+            
+            return isValid;
+        }
+
+        function placeOrder() {
+            if (!validateForm()) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            // Collect form data
+            const formData = {
+                delivery: selectedDelivery,
+                payment: selectedPayment,
+                items: cart,
+                total: document.getElementById('total').textContent,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Store order in localStorage (in a real app, this would go to backend)
+            localStorage.setItem('currentOrder', JSON.stringify(formData));
+            
+            // Clear cart
+            localStorage.removeItem('cart');
+            
+            // Show success message
+            showOrderSuccess();
+        }
+
+        function showOrderSuccess() {
+            const checkoutForm = document.getElementById('checkoutForm');
+            checkoutForm.innerHTML = `
+                <div class="success-message">
+                    <div class="success-icon">✅</div>
+                    <h3>Order Placed Successfully!</h3>
+                    <p>Your order has been confirmed and will be delivered soon.</p>
+                    <p><strong>Order ID:</strong> #${Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
+                    <p><strong>Estimated Delivery:</strong> ${selectedDelivery === 'express' ? '1-2 hours' : '2-4 hours'}</p>
+                    <div style="margin-top: var(--space-lg);">
+                        <button class="btn" onclick="goToDashboard()">Go to Dashboard</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function goBack() {
+            window.location.href = 'cart.html';
+        }
+
+        function goToDashboard() {
+            window.location.href = 'buyerDashboard.html';
+        }
+
+        // Initialize checkout
+        document.addEventListener('DOMContentLoaded', function() {
+            if (cart.length === 0) {
+                alert('Your cart is empty! Redirecting to products page.');
+                window.location.href = 'products.html';
+                return;
+            }
+            
+            renderOrderItems();
+            updateSummary();
+            
+            // Set default selections
+            document.querySelector('.delivery-option').classList.add('selected');
+            document.querySelector('.payment-method').classList.add('selected');
+        });
+    </script>
+</body>
+</html> 

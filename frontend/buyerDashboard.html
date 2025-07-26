@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyer Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🍲 Rajura Misal Bhandaar</div>
+            <div class="nav-links">
+                <a href="buyerDashboard.html">Dashboard</a>
+                <a href="products.html">Products</a>
+                <a href="cart.html">Cart</a>
+                <a href="checkout.html">Checkout</a>
+                <div class="user-profile-icon" onclick="toggleProfilePopup()">👤</div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- User Profile Popup -->
+    <div class="popup-overlay" id="popupOverlay" onclick="closeProfilePopup()"></div>
+    <div class="user-profile-popup" id="userProfilePopup">
+        <div class="popup-header">
+            <div class="popup-title">User Profile</div>
+            <button class="close-popup" onclick="closeProfilePopup()">×</button>
+        </div>
+        <div class="popup-content">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-info">
+                <h3>Welcome, Foodie!</h3>
+                <p>Premium Buyer</p>
+                <p>📍 Mumbai, Maharashtra</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">₹8,450</div>
+                    <div class="stat-label">Spent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4.8</div>
+                    <div class="stat-label">Rating</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">Vendors</div>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <div class="profile-action" onclick="editProfile()">
+                    <div class="profile-action-icon">✏️</div>
+                    <div class="profile-action-text">Edit Profile</div>
+                </div>
+                <div class="profile-action" onclick="viewOrders()">
+                    <div class="profile-action-icon">📋</div>
+                    <div class="profile-action-text">Order History</div>
+                </div>
+                <div class="profile-action" onclick="viewFavorites()">
+                    <div class="profile-action-icon">❤️</div>
+                    <div class="profile-action-text">Favorites</div>
+                </div>
+                <div class="profile-action" onclick="settings()">
+                    <div class="profile-action-icon">⚙️</div>
+                    <div class="profile-action-text">Settings</div>
+                </div>
+                <div class="profile-action" onclick="logout()">
+                    <div class="profile-action-icon">🚪</div>
+                    <div class="profile-action-text">Logout</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <!-- Main Content -->
+            <div class="main-content">
+                <h2 class="section-title">Welcome to Your Dashboard!</h2>
+                <p style="color: var(--gray); margin-bottom: var(--space-lg);">Manage your food business and find the best vendors for fresh ingredients</p>
+                
+                <div class="quick-actions">
+                    <div class="action-card" onclick="window.location.href='vendors.html'">
+                        <div class="action-icon">🏪</div>
+                        <h4>Find Vendors</h4>
+                        <p>Discover trusted suppliers for your ingredients</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="window.location.href='products.html'">
+                        <div class="action-icon">🛍️</div>
+                        <h4>Browse Products</h4>
+                        <p>Shop fresh ingredients from your favorite vendors</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="window.location.href='cart.html'">
+                        <div class="action-icon">🛒</div>
+                        <h4>View Cart</h4>
+                        <p>Check your current order items</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="window.location.href='orders.html'">
+                        <div class="action-icon">📋</div>
+                        <h4>Order History</h4>
+                        <p>Track your previous orders and deliveries</p>
+                    </div>
+                </div>
+
+                <h3 class="section-title" style="margin-top: var(--space-xl);">Recent Activity</h3>
+                <div class="recent-activity">
+                    <div class="activity-item">
+                        <div class="activity-icon">📦</div>
+                        <div class="activity-details">
+                            <h4>Order #1234 Delivered</h4>
+                            <p>Fresh vegetables from Fresh Foods Co. delivered successfully</p>
+                            <span class="activity-time">2 hours ago</span>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">⭐</div>
+                        <div class="activity-details">
+                            <h4>New Vendor Added</h4>
+                            <p>Spice Paradise is now available in your area</p>
+                            <span class="activity-time">1 day ago</span>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">💰</div>
+                        <div class="activity-details">
+                            <h4>Special Offer</h4>
+                            <p>Get 10% off on your next order above ₹500</p>
+                            <span class="activity-time">2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .recent-activity {
+            display: grid;
+            gap: var(--space-md);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--light-gray);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .activity-icon {
+            font-size: 1.5rem;
+            background: var(--primary);
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-details h4 {
+            color: var(--dark);
+            margin-bottom: var(--space-sm);
+            font-size: 1rem;
+        }
+
+        .activity-details p {
+            color: var(--gray);
+            margin-bottom: var(--space-sm);
+            font-size: 0.9rem;
+        }
+
+        .activity-time {
+            color: var(--gray);
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+    </style>
+
+    <script>
+        // Profile Popup Functions
+        function toggleProfilePopup() {
+            const popup = document.getElementById('userProfilePopup');
+            const overlay = document.getElementById('popupOverlay');
+            
+            popup.classList.toggle('open');
+            overlay.classList.toggle('open');
+            
+            // Prevent body scroll when popup is open
+            document.body.style.overflow = popup.classList.contains('open') ? 'hidden' : 'auto';
+        }
+
+        function closeProfilePopup() {
+            const popup = document.getElementById('userProfilePopup');
+            const overlay = document.getElementById('popupOverlay');
+            
+            popup.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Profile Action Functions
+        function editProfile() {
+            alert('Edit Profile functionality will be implemented here');
+            closeProfilePopup();
+        }
+
+        function viewOrders() {
+            alert('Order History functionality will be implemented here');
+            closeProfilePopup();
+        }
+
+        function viewFavorites() {
+            alert('Favorites functionality will be implemented here');
+            closeProfilePopup();
+        }
+
+        function settings() {
+            alert('Settings functionality will be implemented here');
+            closeProfilePopup();
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear any stored data
+                localStorage.removeItem('cart');
+                localStorage.removeItem('selectedFoodType');
+                localStorage.removeItem('selectedVendor');
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userPhone');
+                
+                // Redirect to login page
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Close popup when pressing Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeProfilePopup();
+            }
+        });
+
+        // Load user data (in a real app, this would come from backend)
+        function loadUserData() {
+            // Simulate loading user data
+            const userData = {
+                name: 'Foodie',
+                type: 'Premium Buyer',
+                location: 'Mumbai, Maharashtra',
+                orders: 12,
+                spent: '₹8,450',
+                rating: 4.8,
+                vendors: 15
+            };
+            
+            // Update profile info
+            document.querySelector('.profile-info h3').textContent = `Welcome, ${userData.name}!`;
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+        });
+    </script>
+</body>
+</html>

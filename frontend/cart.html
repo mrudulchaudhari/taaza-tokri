@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Rajura Misal Bhandaar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">🍲 Rajura Misal Bhandaar</div>
+            <div class="nav-links">
+                <a href="buyerDashboard.html">Dashboard</a>
+                <a href="products.html">Products</a>
+                <a href="cart.html" class="cart-icon">
+                    🛒 <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <a href="checkout.html">Checkout</a>
+                <a href="login.html">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="breadcrumb">Dashboard > Cart</div>
+            <h1 class="page-title">Shopping Cart</h1>
+            <p>Review your items before checkout</p>
+        </div>
+
+        <div class="cart-container">
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be populated by JavaScript -->
+            </div>
+
+            <div class="cart-summary">
+                <div class="summary-title">Order Summary</div>
+                
+                <div class="delivery-info">
+                    <div class="delivery-title">🚚 Delivery Information</div>
+                    <div class="delivery-details">
+                        <div>📍 Mumbai, Maharashtra</div>
+                        <div>📅 Same day delivery available</div>
+                        <div>⏰ Delivery time: 2-4 hours</div>
+                    </div>
+                </div>
+
+                <div class="savings-badge">
+                    💰 Save ₹50 on orders above ₹500!
+                </div>
+
+                <div class="summary-row">
+                    <span class="summary-label">Subtotal</span>
+                    <span class="summary-value" id="subtotal">₹0</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Delivery Fee</span>
+                    <span class="summary-value" id="deliveryFee">₹0</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Discount</span>
+                    <span class="summary-value" id="discount">-₹0</span>
+                </div>
+                
+                <div class="summary-row summary-total">
+                    <span>Total</span>
+                    <span id="total">₹0</span>
+                </div>
+
+                <div style="margin-top: var(--space-lg);">
+                    <button class="btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
+                </div>
+                
+                <div style="margin-top: var(--space-md);">
+                    <button class="btn btn-outline" onclick="continueShopping()">Continue Shopping</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function renderCart() {
+            const cartContainer = document.getElementById('cartItems');
+            const cartCount = document.getElementById('cartCount');
+            
+            if (cart.length === 0) {
+                cartContainer.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h3>Your cart is empty</h3>
+                        <p>Add some fresh products to get started!</p>
+                        <button class="btn" onclick="continueShopping()">Start Shopping</button>
+                    </div>
+                `;
+                cartCount.textContent = '0';
+                updateSummary();
+                return;
+            }
+            
+            cartContainer.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div class="item-image">${item.image}</div>
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-unit">${item.unit}</div>
+                        <div class="item-price">₹${item.price}</div>
+                    </div>
+                    <div class="item-quantity">
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="updateCartQuantity(${item.id}, -1)">-</button>
+                            <input type="number" class="quantity-input" value="${item.quantity}" min="1" 
+                                   onchange="updateCartQuantity(${item.id}, 0)">
+                            <button class="quantity-btn" onclick="updateCartQuantity(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="item-total">₹${item.price * item.quantity}</div>
+                    <button class="remove-btn" onclick="removeFromCart(${item.id})">🗑️</button>
+                </div>
+            `).join('');
+            
+            updateCartCount();
+            updateSummary();
+        }
+
+        function updateCartQuantity(itemId, change) {
+            const item = cart.find(item => item.id === itemId);
+            if (!item) return;
+            
+            if (change === 0) {
+                // Direct input change
+                const input = event.target;
+                const newQuantity = parseInt(input.value) || 1;
+                item.quantity = Math.max(1, newQuantity);
+            } else {
+                // Button click
+                item.quantity = Math.max(1, item.quantity + change);
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function removeFromCart(itemId) {
+            cart = cart.filter(item => item.id !== itemId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        function updateSummary() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryFee = subtotal > 0 ? 50 : 0;
+            const discount = subtotal >= 500 ? 50 : 0;
+            const total = subtotal + deliveryFee - discount;
+            
+            document.getElementById('subtotal').textContent = `₹${subtotal}`;
+            document.getElementById('deliveryFee').textContent = `₹${deliveryFee}`;
+            document.getElementById('discount').textContent = `-₹${discount}`;
+            document.getElementById('total').textContent = `₹${total}`;
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            window.location.href = 'checkout.html';
+        }
+
+        function continueShopping() {
+            window.location.href = 'products.html';
+        }
+
+        // Initialize cart
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCart();
+        });
+    </script>
+</body>
+</html> 
