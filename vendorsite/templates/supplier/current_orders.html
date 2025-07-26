@@ -1,0 +1,30 @@
+{% extends "supplier/base.html" %}
+
+{% block content %}
+<div class="card">
+    <h3>Pending Orders</h3>
+    <hr>
+    {% for order in orders %}
+        <div style="padding: 1rem; border-bottom: 1px solid #ddd;">
+            <strong>Order #{{ order.id }}</strong> by {{ order.user.username }}
+            <span style="float: right; font-weight: bold; color: orange;">{{ order.get_status_display }}</span>
+            <ul style="font-size: 0.9em; color: #555;">
+                {% for item in order.items.all %}
+                    {% if item.product.supplier.user == request.user %}
+                        <li>{{ item.product.title }} (Qty: {{ item.quantity }})</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            <form action="{% url 'update_order_status' order.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" name="status" value="Processing" class="order-action-btn tick" title="Mark as Processing">⚙️</button>
+                <button type="submit" name="status" value="Shipped" class="order-action-btn tick" title="Mark as Shipped">✅</button>
+                <button type="submit" name="status" value="Cancelled" class="order-action-btn cross" title="Mark as Cancelled">❌</button>
+            </form>
+        </div>
+    {% empty %}
+        <p>You have no pending orders.</p>
+    {% endfor %}
+</div>
+{% endblock %}

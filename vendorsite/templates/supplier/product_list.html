@@ -1,0 +1,21 @@
+{% extends "supplier/base.html" %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3>Current Stock</h3>
+        <a href="{% url 'add_product' %}" class="btn">Add New Product</a>
+    </div>
+    <hr>
+    <ul style="list-style: none; padding: 0;">
+        {% for product in products %}
+        <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+            {{ product.title }} - <strong>Price:</strong> ₹{{ product.price }} | <strong>Stock:</strong> {{ product.quantity }}
+            <a href="{% url 'update_product' product.pk %}" style="float: right;">Edit</a>
+        </li>
+        {% empty %}
+        <li>You have not added any products yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
