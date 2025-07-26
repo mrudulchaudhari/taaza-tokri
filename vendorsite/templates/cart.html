@@ -4,52 +4,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart - Rajura Misal Bhandaar</title>
+    <title>Cart</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+    <!-- Location Display Bar -->
+    <div class="location-bar">
+        <div class="location-content">
+            <span class="location-icon">📍</span>
+            <span class="location-text">Mumbai, Maharashtra</span>
+            <div class="location-weather">
+                <span>🌤️</span>
+                <span>28°C</span>
+            </div>
+        </div>
+    </div>
+
     <header class="header">
         <nav class="nav">
-            <div class="logo">🍲 Rajura Misal Bhandaar</div>
+            <div class="logo">Foodies</div>
             <div class="nav-links">
-                <a href="{% url 'listing:list_materials' %}">Products</a>
-                <a href="{% url 'listing:cart_detail' %}" class="cart-icon">
-                    🛒 <span class="cart-count">{{ cart|length }}</span>
-                </a>
-                <a href="#">Checkout</a>
-                <a href="#">Logout</a>
+                <a href="{% url 'listing:list_materials' %}">Home</a>
+                <a href="#">Sellers</a>
+                <a href="{% url 'listing:products' %}">Products</a>
+                <a href="{% url 'listing:cart_detail' %}" class="active">Cart</a>
+                <div class="user-profile-icon" onclick="toggleProfilePopup()">👤</div>
             </div>
         </nav>
     </header>
 
+    <!-- User Profile Popup -->
+    <div class="popup-overlay" id="popupOverlay" onclick="closeProfilePopup()"></div>
+    <div class="user-profile-popup" id="userProfilePopup">
+        <div class="popup-header">
+            <div class="popup-title">User Profile</div>
+            <button class="close-popup" onclick="closeProfilePopup()">×</button>
+        </div>
+        <div class="popup-content">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-info">
+                <h3>Welcome, Foodie!</h3>
+                <p>Premium Buyer</p>
+                <p>📍 Mumbai, Maharashtra</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">₹8,450</div>
+                    <div class="stat-label">Spent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4.8</div>
+                    <div class="stat-label">Rating</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">Sellers</div>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <div class="profile-action" onclick="editProfile()">
+                    <div class="profile-action-icon">✏️</div>
+                    <div class="profile-action-text">Edit Profile</div>
+                </div>
+                <div class="profile-action" onclick="viewOrders()">
+                    <div class="profile-action-icon">📋</div>
+                    <div class="profile-action-text">Order History</div>
+                </div>
+                <div class="profile-action" onclick="viewFavorites()">
+                    <div class="profile-action-icon">❤️</div>
+                    <div class="profile-action-text">Favorites</div>
+                </div>
+                <div class="profile-action" onclick="settings()">
+                    <div class="profile-action-icon">⚙️</div>
+                    <div class="profile-action-text">Settings</div>
+                </div>
+                <div class="profile-action" onclick="logout()">
+                    <div class="profile-action-icon">🚪</div>
+                    <div class="profile-action-text">Logout</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="page-header">
-            <div class="breadcrumb">Dashboard > Cart</div>
+            <div class="breadcrumb">Home > Cart</div>
             <h1 class="page-title">Shopping Cart</h1>
+            <p>Review your items before checkout</p>
         </div>
 
         <div class="cart-container">
-            <div class="cart-items">
+            <div class="cart-items" id="cartItems">
                 {% if cart %}
                     {% for item in cart %}
                         {% with product=item.product %}
-                        <div class="cart-item">
-                            {# CHANGED: Replaced non-existent emoji field with a static one #}
-                            <div class="item-image">🍲</div>
+                        <div class="cart-item" data-item-id="{{ product.id }}">
+                            <div class="item-image">{{ product.image|default:"🍲" }}</div>
                             <div class="item-details">
-                                {# CHANGED: Use product.title from your model #}
                                 <div class="item-name">{{ product.title }}</div>
-                                {# REMOVED: product.unit does not exist in your model #}
+                                <div class="item-unit">{{ product.unit|default:"per piece" }}</div>
                                 <div class="item-price">₹{{ item.price }}</div>
                             </div>
                             <div class="item-quantity">
-                                <form action="{% url 'listing:cart_update' product.id %}" method="post" class="quantity-controls">
-                                    {% csrf_token %}
-                                    <input type="number" class="quantity-input" name="quantity" value="{{ item.quantity }}" min="1" onchange="this.form.submit()">
-                                </form>
+                                <div class="quantity-controls">
+                                    <button class="quantity-btn" onclick="updateCartQuantity({{ product.id }}, -1)">-</button>
+                                    <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" 
+                                           id="qty-{{ product.id }}" onchange="updateCartQuantity({{ product.id }}, 0)">
+                                    <button class="quantity-btn" onclick="updateCartQuantity({{ product.id }}, 1)">+</button>
+                                </div>
                             </div>
                             <div class="item-total">₹{{ item.total_price }}</div>
-                            <a href="{% url 'listing:cart_remove' product.id %}" class="remove-btn">🗑️</a>
+                            <button class="remove-btn" onclick="removeFromCart({{ product.id }})">🗑️</button>
                         </div>
                         {% endwith %}
                     {% endfor %}
@@ -57,45 +128,96 @@
                     <div class="empty-cart">
                         <div class="empty-cart-icon">🛒</div>
                         <h3>Your cart is empty</h3>
-                        <a href="{% url 'listing:list_materials' %}" class="btn">Start Shopping</a>
+                        <p>Add some fresh products to get started!</p>
+                        <a href="{% url 'listing:products' %}" class="btn btn-outline">Continue Shopping</a>
                     </div>
                 {% endif %}
             </div>
 
-            {% if cart %}
             <div class="cart-summary">
                 <div class="summary-title">Order Summary</div>
+                
                 <div class="delivery-info">
                     <div class="delivery-title">🚚 Delivery Information</div>
-                    <div>📍 Mumbai, Maharashtra</div>
+                    <div class="delivery-details">
+                        <div>📍 Mumbai, Maharashtra</div>
+                        <div>📅 Same day delivery available</div>
+                        <div>⏰ Delivery time: 2-4 hours</div>
+                    </div>
                 </div>
-                {% if cart.get_subtotal_price >= 500 %}
+
                 <div class="savings-badge">
-                    💰 You saved ₹50 on your order!
+                    💰 Save ₹50 on orders above ₹500!
                 </div>
-                {% endif %}
+
                 <div class="summary-row">
-                    <span>Subtotal</span>
-                    <span>₹{{ cart.get_subtotal_price }}</span>
+                    <span class="summary-label">Subtotal</span>
+                    <span class="summary-value" id="subtotal">
+                        {% if cart %}₹{{ cart.get_subtotal_price }}{% else %}₹0{% endif %}
+                    </span>
                 </div>
+                
                 <div class="summary-row">
-                    <span>Delivery Fee</span>
-                    <span>₹{{ cart.get_delivery_fee }}</span>
+                    <span class="summary-label">Delivery Fee</span>
+                    <span class="summary-value" id="deliveryFee">
+                        {% if cart %}₹{{ cart.get_delivery_fee }}{% else %}₹0{% endif %}
+                    </span>
                 </div>
+                
                 <div class="summary-row">
-                    <span>Discount</span>
-                    <span>-₹{{ cart.get_discount }}</span>
+                    <span class="summary-label">Discount</span>
+                    <span class="summary-value" id="discount">
+                        {% if cart %}-₹{{ cart.get_discount }}{% else %}-₹0{% endif %}
+                    </span>
                 </div>
+                
                 <div class="summary-row summary-total">
                     <span>Total</span>
-                    <span>₹{{ cart.get_total_price }}</span>
+                    <span id="total">
+                        {% if cart %}₹{{ cart.get_total_price }}{% else %}₹0{% endif %}
+                    </span>
                 </div>
-                <div style="margin-top: 24px;">
-                    <a href="#" class="btn">Proceed to Checkout</a>
+
+                <div style="margin-top: var(--space-lg);">
+                    <button class="btn" onclick="proceedToCheckout()" {% if not cart %}disabled{% endif %}>
+                        Proceed to Checkout
+                    </button>
+                </div>
+                
+                <div style="margin-top: var(--space-md);">
+                    <a href="{% url 'listing:products' %}" class="btn btn-outline">Continue Shopping</a>
                 </div>
             </div>
-            {% endif %}
         </div>
     </div>
+
+    <!-- Pass Django cart data to JavaScript -->
+    <script>
+        // Django cart data passed to JavaScript
+        const djangoCart = [
+            {% for item in cart %}
+            {% with product=item.product %}
+            {
+                id: {{ product.id }},
+                name: "{{ product.title|escapejs }}",
+                price: {{ item.price }},
+                unit: "{{ product.unit|default:'per piece'|escapejs }}",
+                image: "{{ product.image|default:'🍲'|escapejs }}",
+                quantity: {{ item.quantity }},
+                total_price: {{ item.total_price }}
+            }{% if not forloop.last %},{% endif %}
+            {% endwith %}
+            {% endfor %}
+        ];
+
+        // Cart totals from Django
+        const cartTotals = {
+            subtotal: {% if cart %}{{ cart.get_subtotal_price }}{% else %}0{% endif %},
+            deliveryFee: {% if cart %}{{ cart.get_delivery_fee }}{% else %}0{% endif %},
+            discount: {% if cart %}{{ cart.get_discount }}{% else %}0{% endif %},
+            total: {% if cart %}{{ cart.get_total_price }}{% else %}0{% endif %}
+        };
+    </script>
+    <script src="{% static 'js/cart.js' %}"></script>
 </body>
 </html>
