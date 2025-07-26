@@ -1,6 +1,6 @@
 from django.db import models
 from vendor.models import Vendor
-from supplier.models import Supplier
+# from supplier.models import Supplier
 
 class ProductListing(models.Model):
     """
@@ -28,14 +28,7 @@ class ProductListing(models.Model):
         related_name='listings',
         help_text="The vendor for this listing."
     )
-    supplier = models.ForeignKey(
-        Supplier,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='listings',
-        help_text="The supplier for this product."
-    )
+    supplier = models.ForeignKey('supplier.Supplier', on_delete=models.CASCADE)
 
     title = models.CharField(max_length=255, help_text="The title of the product listing.")
     description = models.TextField(blank=True, null=True, help_text="A description for the product.")
