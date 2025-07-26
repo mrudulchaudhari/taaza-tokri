@@ -1,1 +1,302 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Seller Dashboard</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #faf9f7;
+    color: #333;
+  }
+
+  /* Navbar */
+  nav {
+    background-color: #f3a261; /* soft orange */
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1.4rem;
+    box-shadow: 0 2px 5px rgba(243,162,97,0.4);
+  }
+  nav .logo {
+    letter-spacing: 2px;
+  }
+  nav .logout {
+    cursor: pointer;
+    background: #e07a3f;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  nav .logout:hover {
+    background: #bf6531;
+  }
+
+  /* Container */
+  .container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  /* Summary Cards */
+  .cards {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .card {
+    flex: 1 1 250px;
+    background-color: white;
+    border-left: 5px solid #f3a261;
+    padding: 1.5rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease;
+  }
+  .card:hover {
+    box-shadow: 0 3px 10px rgba(243,162,97,0.25);
+  }
+  .card h3 {
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+    color: #d57f4c;
+  }
+  .card p {
+    font-size: 2rem;
+    margin: 0;
+    font-weight: 700;
+    color: #f3a261;
+  }
+
+  /* Section Headings */
+  h2 {
+    color: #f3a261;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #f3a261;
+    padding-bottom: 0.3rem;
+    font-weight: 700;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 3rem;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+  }
+  th, td {
+    padding: 1rem 1.2rem;
+    text-align: left;
+  }
+  th {
+    background-color: #f3a261;
+    color: white;
+    font-weight: 600;
+  }
+  tr:nth-child(even) {
+    background-color: #fdf9f5;
+  }
+  tr:hover {
+    background-color: #fff3e6;
+  }
+
+  /* Buttons */
+  button {
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .btn-accept {
+    background-color: #4caf50; /* green */
+    color: white;
+    margin-right: 0.5rem;
+  }
+  .btn-accept:hover {
+    background-color: #388e3c;
+  }
+
+  .btn-reject {
+    background-color: #e74c3c; /* red */
+    color: white;
+    margin-right: 0.5rem;
+  }
+  .btn-reject:hover {
+    background-color: #c0392b;
+  }
+
+  .btn-delivered {
+    background-color: #f3a261; /* soft orange */
+    color: white;
+  }
+  .btn-delivered:hover {
+    background-color: #d57f4c;
+  }
+
+  .btn-edit {
+    background-color: #81c784; /* soft green */
+    color: #1b5e20;
+  }
+  .btn-edit:hover {
+    background-color: #66bb6a;
+  }
+
+  .btn-delete {
+    background-color: #f44336; /* soft red */
+    color: white;
+  }
+  .btn-delete:hover {
+    background-color: #d32f2f;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .cards {
+      flex-direction: column;
+    }
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+    thead tr {
+      display: none;
+    }
+    tr {
+      margin-bottom: 1rem;
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 1px 5px rgba(243,162,97,0.1);
+    }
+    td {
+      padding-left: 50%;
+      position: relative;
+      text-align: right;
+    }
+    td::before {
+      position: absolute;
+      left: 1rem;
+      width: 45%;
+      padding-left: 0.5rem;
+      white-space: nowrap;
+      font-weight: 600;
+      text-align: left;
+      content: attr(data-label);
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Raw Materials Seller</div>
+  <div class="logout">Logout</div>
+</nav>
+
+<div class="container">
+
+  <div class="cards">
+    <div class="card">
+      <h3>Total Products</h3>
+      <p>35</p>
+    </div>
+    <div class="card">
+      <h3>Pending Orders</h3>
+      <p>7</p>
+    </div>
+    <div class="card">
+      <h3>Completed Orders</h3>
+      <p>120</p>
+    </div>
+  </div>
+
+  <section>
+    <h2>Pending Orders</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Order ID</th>
+          <th>Vendor Name</th>
+          <th>Items</th>
+          <th>Quantity</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+        <tr>
+          <td data-label="Order ID">#001</td>
+          <td data-label="Vendor Name">Shyam Traders</td>
+          <td data-label="Items">Potatoes, Onions</td>
+          <td data-label="Quantity">50 kg</td>
+          <td data-label="Status">Pending</td>
+          <td data-label="Actions">
+            <button class="btn-accept">Accept</button>
+            <button class="btn-reject">Reject</button>
+            <button class="btn-delivered">Mark Delivered</button>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="Order ID">#002</td>
+          <td data-label="Vendor Name">Local Bites</td>
+          <td data-label="Items">Tomatoes</td>
+          <td data-label="Quantity">30 kg</td>
+          <td data-label="Status">Pending</td>
+          <td data-label="Actions">
+            <button class="btn-accept">Accept</button>
+            <button class="btn-reject">Reject</button>
+            <button class="btn-delivered">Mark Delivered</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Product Inventory</h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Product</th>
+          <th>Stock</th>
+          <th>Price (₹/kg)</th>
+          <th>Actions</th>
+        </tr>
+        <tr>
+          <td data-label="Product">Potatoes</td>
+          <td data-label="Stock">100 kg</td>
+          <td data-label="Price">20</td>
+          <td data-label="Actions">
+            <button class="btn-edit">Edit</button>
+            <button class="btn-delete">Delete</button>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="Product">Onions</td>
+          <td data-label="Stock">60 kg</td>
+          <td data-label="Price">25</td>
+          <td data-label="Actions">
+            <button class="btn-edit">Edit</button>
+            <button class="btn-delete">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+
+</body>
+</html>
