@@ -2,43 +2,35 @@
 
 from django.db import models
 from django.conf import settings
+from vendor.models import Vendor   # ✅ bring this back!
 from listings.models import ProductListing
-
-# NOTE: The import for Vendor has been removed.
 
 class Supplier(models.Model):
     """
-    Represents a supplier in the system. The direct link to a Vendor is removed.
+    Supplier: Works under a Vendor. Required link!
     """
-    CUISINE_CHOICES = [
-        ('CHAAT', 'Chaat'), ('PAV_BHAJI', 'Pav Bhaji'), ('SOUTH_INDIAN', 'South Indian'),
-        ('CHOLE_BHATURE', 'Chole Bhature'), ('MOMOS', 'Momos'), ('NORTH_INDIAN', 'North Indian'),
-        ('ROLLS', 'Rolls'), ('BIRYANI', 'Biryani'), ('SWEETS', 'Sweets'),
-        ('BEVERAGES', 'Beverages'), ('OTHER', 'Other'),
-    ]
-
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='supplier_profile'
     )
-    
-    # REMOVED: The ForeignKey to Vendor is gone, as requested.
-    # vendor = models.ForeignKey(Vendor, ...)
 
-    name = models.CharField(max_length=255, help_text="The legal name of the supplier.")
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)  # ✅ REQUIRED
+
+    name = models.CharField(max_length=255)
     contact_person = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=10, unique=True)
     address = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
-    cuisine = models.CharField(max_length=50, choices=CUISINE_CHOICES, blank=True, null=True)
+    cuisine = models.CharField(max_length=50, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     date_added = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
+
 
 class Order(models.Model):
     # This model correctly links a User (who could be a Vendor) to an order.
