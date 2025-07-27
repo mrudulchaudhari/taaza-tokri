@@ -1,3 +1,4 @@
+# vendorsite/supplier/models.py
 from django.db import models
 from django.conf import settings
 from listings.models import ProductListing
@@ -18,7 +19,16 @@ class Supplier(models.Model):
         return self.name
 
 class Order(models.Model):
-    STATUS_CHOICES = (('Pending', 'Pending'), ('Shipped', 'Shipped'), ('Cancelled', 'Cancelled'))
+    # --- THIS IS THE CHANGE ---
+    # Added 'Delivered' to the list of choices.
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Shipped', 'Shipped'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+    )
+    # --------------------------
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')

@@ -18,14 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from accounts.views import home
+from accounts.views import landing_page_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('supplier/', include('supplier.urls')),
     path('vendor/', include('vendor.urls')),
-    path('', home, name='home'),
+
+    # CORRECTED: This now points the homepage URL ('') to your landing page.
+    path('', landing_page_view, name='landing'),
 ]
 
 if settings.DEBUG:
