@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>What Do You Sell?</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+<body>
+  <header class="header">
+    <nav class="nav">
+      <div class="logo">FOODies</div>
+      <div class="nav-links">
+        <a href="{% url 'accounts:logout' %}">Logout</a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="welcome-section">
+    <div class="container">
+      <h1 class="welcome-title">Welcome to Foodsy</h1>
+      <p class="welcome-subtitle">Let's get started by understanding your business</p>
+    </div>
+  </div>
+
+  <div class="selection-container">
+    <div class="progress-indicator">
+      <div class="progress-step active"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+    </div>
+    <div class="selection-header">
+      <h2 class="selection-title">What type of food do you sell?</h2>
+      <p class="selection-description">
+        Select your primary food category to help us find the best Sellers and ingredients for your business. 
+        You can always change this later in your settings.
+      </p>
+    </div>
+
+    <form id="categoryForm" method="POST" action="{% url 'vendor:select_type' %}">
+      {% csrf_token %}
+      <input type="hidden" name="cuisine_id" id="selectedCuisineId" />
+
+      <div class="food-categories">
+        {% for value, name in categories %}
+        <div class="food-category" onclick="selectCategory(this, '{{ value }}')">
+          <h3 class="category-name">{{ name }}</h3>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="selection-actions">
+        <button type="button" class="btn-primary" id="continueBtn" onclick="submitSelection()" disabled>
+          Continue
+        </button>
+        <a href="{% url 'vendor:vendor_dashboard' %}" class="btn-secondary">Skip for Now</a>
+      </div>
+    </form>
+  </div>
+
+  <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
