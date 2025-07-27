@@ -163,7 +163,7 @@
     <div class="login-header" id="loginHeader">Enter your phone to continue</div>
 
     <!-- This form submits to your 'signup_start' view -->
-    <form id="signupForm" method="post" action="{% url 'signup_start' %}">
+    <form id="signupForm" method="post" action="{% url 'accounts:signup_start' %}">
       {% csrf_token %}
       <!-- This hidden input will store the selected role -->
       <input type="hidden" name="role" id="roleInput">
