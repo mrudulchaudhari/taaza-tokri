@@ -1,3 +1,4 @@
+# vendorsite/accounts/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -7,11 +8,9 @@ from supplier.models import Supplier
 
 def login_view(request):
     if request.user.is_authenticated:
-        if hasattr(request.user, 'supplier_profile'):
-            return redirect('supplier:dashboard')
-        elif hasattr(request.user, 'vendor_profile'):
-            return redirect('vendor:vendor_dashboard') # Change to your vendor dashboard URL
-        return redirect('home')
+        if hasattr(request.user, 'supplier_profile'): return redirect('supplier:dashboard')
+        elif hasattr(request.user, 'vendor_profile'): return redirect('vendor:dashboard')
+        return redirect('home') # A fallback home page
 
     if request.method == 'POST':
         form = UserLoginForm(request.POST)
@@ -19,7 +18,6 @@ def login_view(request):
             phone_number = form.cleaned_data.get('phone_number')
             password = form.cleaned_data.get('password')
             user = None
-
             try:
                 user = Supplier.objects.get(phone=phone_number).user
             except Supplier.DoesNotExist:
@@ -32,10 +30,8 @@ def login_view(request):
                 authenticated_user = authenticate(request, username=user.username, password=password)
                 if authenticated_user is not None:
                     login(request, authenticated_user)
-                    if hasattr(authenticated_user, 'supplier_profile'):
-                        return redirect('supplier:dashboard')
-                    elif hasattr(authenticated_user, 'vendor_profile'):
-                        return redirect('vendor_dashboard') # Change to your vendor dashboard URL
+                    if hasattr(authenticated_user, 'supplier_profile'): return redirect('supplier:dashboard')
+                    elif hasattr(authenticated_user, 'vendor_profile'): return redirect('vendor:dashboard')
                     return redirect('home')
                 else:
                     messages.error(request, "Incorrect password. Please try again.")
@@ -43,7 +39,6 @@ def login_view(request):
                 messages.error(request, "No account found with this phone number.")
     else:
         form = UserLoginForm()
-        
     return render(request, 'login.html', {'form': form})
 
 def logout_view(request):
@@ -56,18 +51,15 @@ def signup_page_view(request):
 
 def signup_start(request):
     if request.method == 'POST':
-        phone_number = request.POST.get('phone_number')
+        phone = request.POST.get('phone_number')
         role = request.POST.get('role')
-
-        if not role or not phone_number or not phone_number.isdigit() or len(phone_number) != 10:
+        if not role or not phone or not phone.isdigit() or len(phone) != 10:
             messages.error(request, "Please enter a valid 10-digit phone number and select a role.")
             return redirect('accounts:signup_page')
-
-        if Supplier.objects.filter(phone=phone_number).exists() or Vendor.objects.filter(phone_number=phone_number).exists():
+        if Supplier.objects.filter(phone=phone).exists() or Vendor.objects.filter(phone_number=phone).exists():
             messages.warning(request, 'This phone number is already registered. Please log in.')
             return redirect('accounts:login')
-
-        request.session['signup_phone'] = phone_number
+        request.session['signup_phone'] = phone
         if role == 'buyer':
             return redirect('accounts:register_vendor')
         elif role == 'seller':
@@ -79,14 +71,13 @@ def register_vendor(request):
     if not phone:
         messages.error(request, 'Your session has expired. Please start over.')
         return redirect('accounts:signup_page')
-
     if request.method == 'POST':
         form = VendorSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             del request.session['signup_phone']
             login(request, user)
-            return redirect('vendor:vendor_dashboard')
+            return redirect('vendor:dashboard')
     else:
         form = VendorSignUpForm(initial={'phone_number': phone})
     return render(request, 'accounts/register_vendor.html', {'form': form})
@@ -96,7 +87,6 @@ def register_supplier(request):
     if not phone:
         messages.error(request, 'Your session has expired. Please start over.')
         return redirect('accounts:signup_page')
-
     if request.method == 'POST':
         form = SupplierSignUpForm(request.POST)
         if form.is_valid():
@@ -107,3 +97,6 @@ def register_supplier(request):
     else:
         form = SupplierSignUpForm(initial={'phone': phone})
     return render(request, 'accounts/register_supplier.html', {'form': form})
+
+def home(request): # A simple homepage view
+    return render(request, 'home.html')
