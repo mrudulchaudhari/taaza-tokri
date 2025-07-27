@@ -1,24 +1,14 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Rajura Misal Bhandaar</title>
-    </head>
+</head>
 <body>
-    {% if user.is_authenticated %}
-    <header>
-        <h1>Welcome, {{ request.user.username }}</h1>
-        <nav>
-            <a href="{% if user.supplier_profile %}{% url 'supplier:dashboard' %}{% elif user.vendor_profile %}{% url 'vendor:dashboard' %}{% endif %}">Dashboard</a>
-            <a href="{% url 'accounts:logout' %}">Logout</a>
-        </nav>
-    </header>
-    {% endif %}
-
     <main>
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
     </main>
 </body>
 </html>

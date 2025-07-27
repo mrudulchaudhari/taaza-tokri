@@ -1,4 +1,3 @@
-# vendorsite/accounts/forms.py
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
@@ -21,13 +20,7 @@ class VendorSignUpForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=True)
-        Vendor.objects.create(
-            user=user,
-            shop_name=self.cleaned_data['shop_name'],
-            phone_number=self.cleaned_data['phone_number'],
-            address=self.cleaned_data.get('address', ''),
-            city=self.cleaned_data.get('city', '')
-        )
+        Vendor.objects.create(user=user, shop_name=self.cleaned_data['shop_name'], phone_number=self.cleaned_data['phone_number'], address=self.cleaned_data.get('address', ''), city=self.cleaned_data.get('city', ''))
         return user
 
 class SupplierSignUpForm(UserCreationForm):
@@ -42,11 +35,5 @@ class SupplierSignUpForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=True)
-        Supplier.objects.create(
-            user=user,
-            name=self.cleaned_data['name'],
-            phone=self.cleaned_data['phone'],
-            address=self.cleaned_data.get('address', ''),
-            city=self.cleaned_data.get('city', '')
-        )
+        Supplier.objects.create(user=user, name=self.cleaned_data['name'], phone=self.cleaned_data['phone'], address=self.cleaned_data.get('address', ''), city=self.cleaned_data.get('city', ''))
         return user

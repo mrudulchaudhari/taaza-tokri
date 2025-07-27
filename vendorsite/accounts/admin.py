@@ -1,26 +1,14 @@
+# vendorsite/accounts/admin.py
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 
+# This is the correct configuration for your Custom User model.
+# It uses the default fields that exist on your model.
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ('email', 'user_type', 'is_staff', 'is_active')
-    list_filter = ('user_type', 'is_staff', 'is_active')
-
-    fieldsets = (
-        (None, {'fields': ('email', 'password', 'user_type')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login',)}),
-    )
-
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'user_type', 'password1', 'password2', 'is_staff', 'is_active')}
-        ),
-    )
-
-    search_fields = ('email',)
-    ordering = ('email',)
+    list_display = ['username', 'email', 'is_staff', 'is_active']
+    list_filter = ['is_staff', 'is_active', 'groups']
 
 admin.site.register(CustomUser, CustomUserAdmin)

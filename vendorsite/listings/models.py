@@ -1,4 +1,3 @@
-# vendorsite/listings/models.py
 from django.db import models
 
 class ProductListing(models.Model):

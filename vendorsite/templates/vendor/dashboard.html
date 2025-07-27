@@ -1,6 +1,3 @@
-{% extends 'base.html' %}
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +33,7 @@
         <div class="navbar-brand">🍲 Vendor Dashboard</div>
         <div class="navbar-nav">
             <a href="{% url 'vendor:view_cart' %}">My Cart ({{ cart|length }})</a>
-            <a href="#">My Orders</a>
+            <a href="{% url 'vendor:order_history' %}">My Orders</a>
             <a href="{% url 'accounts:logout' %}">Logout</a>
         </div>
     </nav>

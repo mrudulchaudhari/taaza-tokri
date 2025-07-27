@@ -2,7 +2,16 @@
 {% block content %}
     <h1>Welcome to Rajura Misal Bhandaar</h1>
     {% if not user.is_authenticated %}
-        <a href="{% url 'accounts:login' %}">Login</a>
+        <a href="{% url 'accounts:login' %}">Login</a> |
         <a href="{% url 'accounts:signup_page' %}">Sign Up</a>
+    {% else %}
+        <p>You are logged in as {{ user.username }}.</p>
+        {% if user.supplier_profile %}
+            <a href="{% url 'supplier:dashboard' %}">Go to Supplier Dashboard</a>
+        {% elif user.vendor_profile %}
+            <a href="{% url 'vendor:dashboard' %}">Go to Vendor Dashboard</a>
+        {% endif %}
+        <br>
+        <a href="{% url 'accounts:logout' %}">Logout</a>
     {% endif %}
 {% endblock %}
