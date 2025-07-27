@@ -69,3 +69,21 @@ def place_order(request):
 def order_history(request):
     orders = Order.objects.filter(user=request.user).prefetch_related('items', 'items__product', 'items__product__supplier').order_by('-created_at')
     return render(request, 'vendor/order_history.html', {'orders': orders})
+
+@login_required
+def mark_order_delivered(request, order_id):
+    """
+    Allows the vendor to mark an order they placed as 'Delivered'.
+    """
+    # Get the order, ensuring it belongs to the logged-in user
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    # Only allow this action if the order is currently 'Shipped'
+    if order.status == 'Shipped':
+        order.status = 'Delivered'
+        order.save()
+        messages.success(request, f"Order #{order.id} has been marked as received.")
+    else:
+        messages.warning(request, f"Order #{order.id} could not be marked as received.")
+        
+    return redirect('vendor:order_history')
