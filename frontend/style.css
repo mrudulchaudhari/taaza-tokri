@@ -6,7 +6,6 @@
 }
 
 :root {
-  /* Orange color scheme */
   --primary: #648364;
   --primary-light: #8fb78f;
   --primary-dark: #4b664b;
@@ -448,18 +447,20 @@ input:focus, textarea:focus, select:focus {
 }
 
 .action-card {
-  background: linear-gradient(135deg, var(--primary-light), var(--primary));
-  color: var(--white);
+  background: var(--white);
+  color: var(--dark);
   padding: var(--space-lg);
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  border: 2px solid rgba(100, 131, 100, 0.2);
 }
 
 .action-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(252, 138, 6, 0.3);
+  border-color: var(--primary);
 }
 
 .action-icon {

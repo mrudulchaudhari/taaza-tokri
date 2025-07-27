@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - Rajura Misal Bhandaar</title>
     <style>
         * {
             margin: 0;
@@ -91,6 +91,31 @@
         .form-group input:focus {
             outline: none;
         }
+
+        .password-input {
+            position: relative;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .password-input input {
+            width: 100%;
+            border: none;
+            border-radius: 0;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+        }
         
         .login-button {
             width: 100%;
@@ -108,6 +133,11 @@
         
         .login-button:hover {
             background-color: #e67a00;
+        }
+
+        .login-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
         }
         
         .divider {
@@ -142,18 +172,36 @@
             text-decoration: none;
             font-weight: 500;
         }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .forgot-password a {
+            color: #fc8a06;
+            text-decoration: none;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="logo">Login</div>
+        <div class="logo">🍲 Rajura Misal Bhandaar</div>
         
         <div class="login-header">
-            <h1>Login with Phone</h1>
-            <p>We'll send you a verification code</p>
+            <h1>Welcome Back</h1>
+            <p>Login to your account</p>
         </div>
         
-        <form id="phoneLoginForm">
+        <form id="loginForm">
             <div class="form-group">
                 <label for="phone">Phone Number</label>
                 <div class="phone-input">
@@ -162,16 +210,122 @@
                            pattern="[0-9]{10}" title="10-digit phone number">
                 </div>
             </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-input">
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">👁️</button>
+                </div>
+                <div class="forgot-password">
+                    <a href="#" onclick="forgotPassword()">Forgot Password?</a>
+                </div>
+            </div>
             
-            <button type="submit" class="login-button">Send Verification Code</button>
+            <div class="error-message" id="errorMessage"></div>
+            
+            <button type="submit" class="login-button" id="loginBtn">Login</button>
         </form>
         
         <div class="divider">OR</div>
         
         <div class="alternative-login">
-            <a href="/email-login">Login with Email instead</a>
+            <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
         </div>
     </div>
 
+    <script>
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggle = document.querySelector('.password-toggle');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggle.textContent = '🙈';
+            } else {
+                passwordField.type = 'password';
+                toggle.textContent = '👁️';
+            }
+        }
+
+        // Forgot password function
+        function forgotPassword() {
+            alert('Please contact support to reset your password.');
+        }
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const loginBtn = document.getElementById('loginBtn');
+
+            // Clear previous error
+            errorMessage.style.display = 'none';
+            errorMessage.textContent = '';
+
+            // Validation
+            if (!(phone.length === 10 && /^\d+$/.test(phone))) {
+                showError('Please enter a valid 10-digit phone number');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters long');
+                return;
+            }
+
+            // Disable login button
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+
+            // Check credentials (in real app, this would be a server call)
+            const storedPhone = localStorage.getItem('userPhone');
+            const storedPassword = localStorage.getItem('userPassword');
+            const storedRole = localStorage.getItem('userRole');
+
+            if (storedPhone === phone && storedPassword === password) {
+                // Login successful
+                localStorage.setItem('isLoggedIn', 'true');
+                
+                // Redirect based on role
+                if (storedRole === 'buyer') {
+                    window.location.href = 'buyerDashboard.html';
+                } else if (storedRole === 'seller') {
+                    window.location.href = 'sellerDashboard.html';
+                } else {
+                    // Default to buyer dashboard if role is not set
+                    window.location.href = 'buyerDashboard.html';
+                }
+            } else {
+                // Login failed
+                showError('Invalid phone number or password');
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
+            }
+        });
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        // Auto-redirect if already logged in
+        document.addEventListener('DOMContentLoaded', function () {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                const role = localStorage.getItem('userRole');
+                if (role === 'buyer') {
+                    window.location.href = 'buyerDashboard.html';
+                } else if (role === 'seller') {
+                    window.location.href = 'sellerDashboard.html';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Phone Number Signup - Buyer or Seller</title>
+  <title>Sign Up</title>
   <style>
     * {
       margin: 0;
@@ -13,7 +13,7 @@
     }
 
     body {
-      background-color: #f8f9fa;
+      background-color: #f6e8cd;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -21,30 +21,30 @@
       padding: 20px;
     }
 
-    .login-container {
-      background-color: white;
-      padding: 40px;
+    .signup-container {
+      background-color: #fff4e1;
+      padding: 30px;
       border-radius: 12px;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
       width: 100%;
-      max-width: 450px;
+      max-width: 600px;
       text-align: center;
     }
 
     .logo {
-      margin-bottom: 30px;
-      font-size: 28px;
-      color: #fc8a06;
+      margin-bottom: 25px;
+      font-size: 24px;
+      color: #4b664b;
       font-weight: bold;
     }
 
     .role-selection {
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .role-selection h2 {
-      margin-bottom: 20px;
-      font-size: 22px;
+      margin-bottom: 15px;
+      font-size: 20px;
       color: #333;
     }
 
@@ -59,19 +59,19 @@
       padding: 15px 0;
       font-size: 18px;
       font-weight: 600;
-      color: white;
+      color: #fff4e1;
       border-radius: 10px;
       cursor: pointer;
       user-select: none;
-      transition: background-color 0.3s;
+      transition: all 0.3s;
     }
 
     .role-button.buyer {
-      background-color: #27ae60; /* green */
+      background-color: #648364;
     }
 
     .role-button.seller {
-      background-color: #f9c589; /* lighter orange shade */
+      background-color: #ffd064;
       color: #7a4f00;
     }
 
@@ -80,25 +80,57 @@
       transform: scale(1.05);
     }
 
-    .login-header {
-      margin-bottom: 20px;
-      font-size: 20px;
-      color: #555;
-      display: none; /* Hidden initially */
+    .form-section {
+      display: none;
+    }
+
+    .form-section.active {
+      display: block;
     }
 
     .form-group {
-      margin-bottom: 25px;
+      margin-bottom: 18px;
       text-align: left;
-      display: none; /* Hidden initially */
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 18px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+      margin-bottom: 0;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       color: #555;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 500;
+    }
+
+    .required {
+      color: #e74c3c;
+      margin-left: 2px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #ffd064;
     }
 
     .phone-input {
@@ -116,22 +148,35 @@
       font-size: 16px;
     }
 
-    .form-group input {
+    .phone-input input {
       flex: 1;
-      padding: 12px 15px;
       border: none;
+      border-radius: 0;
+    }
+
+    .phone-input input:focus {
+      border-color: transparent;
+    }
+
+    .password-input {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
       font-size: 16px;
+      color: #666;
     }
 
-    .form-group input:focus {
-      outline: none;
-    }
-
-    .login-button {
+    .btn {
       width: 100%;
       padding: 14px;
-      background-color: #fc8a06;
-      color: white;
       border: none;
       border-radius: 8px;
       font-size: 16px;
@@ -139,110 +184,233 @@
       cursor: pointer;
       transition: background-color 0.3s;
       margin-top: 10px;
-      display: none; /* Hidden initially */
     }
 
-    .login-button:hover {
+    .btn-primary {
+      background-color: #ffd064;
+      color: #7a4f00;
+    }
+
+    .btn-primary:hover {
       background-color: #e67a00;
     }
 
-    /* OTP styles */
-    .otp-group {
-      margin-top: 20px;
-      text-align: left;
-      display: none;
+    .progress-indicator {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
     }
 
-    .otp-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: #555;
-      font-size: 16px;
-      font-weight: 500;
-    }
-
-    .otp-group input {
-      width: 100%;
-      padding: 12px 15px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-    }
-
-    .verify-button {
-      width: 100%;
-      padding: 14px;
-      background-color: #27ae60;
+    .step {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 10px;
+      font-weight: bold;
       color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      margin-top: 10px;
+    }
+
+    .step.active {
+      background-color: #ffd064;
+    }
+
+    .step.completed {
+      background-color: #648364;
+    }
+
+    .buyer-fields,
+    .seller-fields {
       display: none;
     }
 
-    .verify-button:hover {
-      background-color: #1f8a45;
+    .buyer-fields.show,
+    .seller-fields.show {
+      display: block;
+    }
+
+    .password-strength {
+      margin-top: 5px;
+      font-size: 12px;
+    }
+
+    .password-strength.weak {
+      color: #e74c3c;
+    }
+
+    .password-strength.medium {
+      color: #f39c12;
+    }
+
+    .password-strength.strong {
+      color: #27ae60;
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="logo">🍲 Rajura Misal Bhandaar</div>
+  <div class="signup-container">
+    <div class="logo">Taaza Tokri</div>
 
-    <div class="role-selection">
-      <h2>Are you a Buyer or a Seller?</h2>
-      <div class="role-buttons">
-        <div id="buyerBtn" class="role-button buyer">Buyer</div>
-        <div id="sellerBtn" class="role-button seller">Seller</div>
-      </div>
+    <!-- Progress Indicator -->
+    <div class="progress-indicator">
+      <div class="step active" id="step1">1</div>
+      <div class="step" id="step2">2</div>
     </div>
 
-    <div class="login-header" id="loginHeader">Sign up to access your dashboard</div>
+    <!-- Step 1: Role Selection -->
+    <div class="form-section active" id="roleSection">
+      <div class="role-selection">
+        <h2>Are you a Buyer or a Seller?</h2>
+        <div class="role-buttons">
+          <div id="buyerBtn" class="role-button buyer">Buyer</div>
+          <div id="sellerBtn" class="role-button seller">Seller</div>
+        </div>
+      </div>
+      <button type="button" id="nextToDetails" class="btn btn-primary" style="display: none;">Continue</button>
+    </div>
 
-    <form id="signupForm">
-      <div class="form-group" id="phoneGroup">
-        <label for="phone">Phone Number</label>
+    <!-- Step 2: Registration Details -->
+    <div class="form-section" id="detailsSection">
+      <h2 id="accountHeading">Create Your Account</h2>
+      
+      <!-- Phone and Password Fields -->
+      <div class="form-group">
+        <label for="phone">Phone Number<span class="required">*</span></label>
         <div class="phone-input">
           <span class="country-code">+91</span>
           <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required pattern="[0-9]{10}" title="10-digit phone number" />
         </div>
       </div>
 
-      <button type="submit" id="signupBtn" class="login-button">Sign Up</button>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="password">Password<span class="required">*</span></label>
+          <div class="password-input">
+            <input type="password" id="password" name="password" placeholder="Create a password" required minlength="6">
+            <button type="button" class="password-toggle" onclick="togglePassword('password')">👁️</button>
+          </div>
+          <div class="password-strength" id="passwordStrength"></div>
+        </div>
 
-      <div class="otp-group" id="otpGroup">
-        <label for="otp">Enter OTP</label>
-        <input type="text" id="otp" name="otp" placeholder="Enter OTP" maxlength="6" />
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password<span class="required">*</span></label>
+          <div class="password-input">
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+            <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">👁️</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Common Fields -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fullName">Full Name<span class="required">*</span></label>
+          <input type="text" id="fullName" name="fullName" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email">
+        </div>
       </div>
 
-      <button type="button" id="verifyBtn" class="verify-button">Verify OTP</button>
-    </form>
+      <!-- Buyer-specific Fields -->
+      <div class="buyer-fields" id="buyerFields">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="shopName">Shop Name<span class="required">*</span></label>
+            <input type="text" id="shopName" name="shopName" required>
+          </div>
+          <div class="form-group">
+            <label for="city">City<span class="required">*</span></label>
+            <input type="text" id="city" name="city" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="shopAddress">Shop Address<span class="required">*</span></label>
+          <textarea id="shopAddress" name="shopAddress" rows="2" required></textarea>
+        </div>
+      </div>
+
+      <!-- Seller-specific Fields -->
+      <div class="seller-fields" id="sellerFields">
+        <!-- Seller fields are minimal as per the original registration form -->
+      </div>
+
+      <!-- Common field for both buyer and seller -->
+      <div class="form-group">
+        <label for="cuisine">Cuisine<span class="required">*</span></label>
+        <input id="cuisine" name="cuisine" required>
+      </div>
+
+      <button type="button" id="completeRegistration" class="btn btn-primary">Create Account</button>
+      
+
+    </div>
   </div>
 
   <script>
+    let selectedRole = null;
+    let currentStep = 1;
+
+    // DOM Elements
     const buyerBtn = document.getElementById('buyerBtn');
     const sellerBtn = document.getElementById('sellerBtn');
-    const loginHeader = document.getElementById('loginHeader');
-    const signupForm = document.getElementById('signupForm');
-    const phoneGroup = document.getElementById('phoneGroup');
-    const signupBtn = document.getElementById('signupBtn');
-    const otpGroup = document.getElementById('otpGroup');
-    const verifyBtn = document.getElementById('verifyBtn');
-    const otpInput = document.getElementById('otp');
+    const nextToDetails = document.getElementById('nextToDetails');
+    const completeRegistration = document.getElementById('completeRegistration');
+    
+    const roleSection = document.getElementById('roleSection');
+    const detailsSection = document.getElementById('detailsSection');
+    
+    const buyerFields = document.getElementById('buyerFields');
+    const sellerFields = document.getElementById('sellerFields');
 
-    let selectedRole = null;
-    let generatedOTP = null;
+    // Progress steps
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
 
-    function showPhoneForm() {
-      loginHeader.style.display = 'block';
-      phoneGroup.style.display = 'block';
-      signupBtn.style.display = 'block';
+    // Password strength checker
+    function checkPasswordStrength(password) {
+      let strength = 0;
+      const strengthText = document.getElementById('passwordStrength');
+      
+      if (password.length >= 6) strength++;
+      if (password.match(/[a-z]/)) strength++;
+      if (password.match(/[A-Z]/)) strength++;
+      if (password.match(/[0-9]/)) strength++;
+      if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+      strengthText.className = 'password-strength';
+      if (strength < 3) {
+        strengthText.textContent = 'Weak password';
+        strengthText.classList.add('weak');
+      } else if (strength < 4) {
+        strengthText.textContent = 'Medium strength password';
+        strengthText.classList.add('medium');
+      } else {
+        strengthText.textContent = 'Strong password';
+        strengthText.classList.add('strong');
+      }
     }
 
+    // Toggle password visibility
+    function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId);
+      const toggle = field.nextElementSibling;
+      
+      if (field.type === 'password') {
+        field.type = 'text';
+        toggle.textContent = '🙈';
+      } else {
+        field.type = 'password';
+        toggle.textContent = '👁️';
+      }
+    }
+
+    // Role selection
     function selectRole(role) {
       selectedRole = role;
       if (role === 'buyer') {
@@ -252,57 +420,136 @@
         sellerBtn.classList.add('selected');
         buyerBtn.classList.remove('selected');
       }
-      showPhoneForm();
+      nextToDetails.style.display = 'block';
     }
 
     buyerBtn.addEventListener('click', () => selectRole('buyer'));
     sellerBtn.addEventListener('click', () => selectRole('seller'));
 
-    signupForm.addEventListener('submit', function (e) {
-      e.preventDefault();
+    // Navigation functions
+    function showStep(stepNumber) {
+      // Hide all sections
+      roleSection.classList.remove('active');
+      detailsSection.classList.remove('active');
 
-      const phone = document.getElementById('phone').value;
+      // Show current section
+      if (stepNumber === 1) {
+        roleSection.classList.add('active');
+      } else if (stepNumber === 2) {
+        detailsSection.classList.add('active');
+        // Update heading based on role
+        const accountHeading = document.getElementById('accountHeading');
+        if (selectedRole === 'buyer') {
+          accountHeading.textContent = 'Create Your Buyer Account';
+          buyerFields.classList.add('show');
+          sellerFields.classList.remove('show');
+        } else if (selectedRole === 'seller') {
+          accountHeading.textContent = 'Create Your Seller Account';
+          sellerFields.classList.add('show');
+          buyerFields.classList.remove('show');
+        }
+      }
 
+      // Update progress indicator
+      updateProgress(stepNumber);
+    }
+
+    function updateProgress(step) {
+      step1.classList.remove('active', 'completed');
+      step2.classList.remove('active', 'completed');
+
+      if (step >= 1) step1.classList.add('completed');
+      if (step >= 2) step2.classList.add('completed');
+
+      if (step === 1) step1.classList.add('active');
+      if (step === 2) step2.classList.add('active');
+    }
+
+    // Step navigation
+    nextToDetails.addEventListener('click', () => {
       if (!selectedRole) {
         alert('Please select whether you are a Buyer or a Seller.');
         return;
       }
+      currentStep = 2;
+      showStep(2);
+    });
 
+    // Password strength monitoring
+    document.getElementById('password').addEventListener('input', function() {
+      checkPasswordStrength(this.value);
+    });
+
+    // Complete registration
+    completeRegistration.addEventListener('click', () => {
+      const phone = document.getElementById('phone').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('email').value;
+
+      // Validation
       if (!(phone.length === 10 && /^\d+$/.test(phone))) {
         alert('Please enter a valid 10-digit phone number');
         return;
       }
 
-      // Generate a simple 6-digit OTP (in real apps, backend should handle this)
-      generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-      alert(`Your OTP is: ${generatedOTP}`); // For demo only, show OTP in alert
+      if (password.length < 6) {
+        alert('Password must be at least 6 characters long');
+        return;
+      }
 
-      // Hide phone input and sign up button, show OTP input and verify button
-      phoneGroup.style.display = 'none';
-      signupBtn.style.display = 'none';
-      otpGroup.style.display = 'block';
-      verifyBtn.style.display = 'block';
-      otpInput.focus();
-    });
+      if (password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
 
-    verifyBtn.addEventListener('click', () => {
-      const enteredOTP = otpInput.value.trim();
+      if (!fullName.trim()) {
+        alert('Please enter your full name.');
+        return;
+      }
 
-      if (enteredOTP === generatedOTP) {
-        localStorage.setItem('userRole', selectedRole);
-        localStorage.setItem('userPhone', document.getElementById('phone').value);
-        localStorage.setItem('isLoggedIn', 'true');
+      // Validate cuisine field (required for both buyer and seller)
+      const cuisine = document.getElementById('cuisine').value;
+      if (!cuisine.trim()) {
+        alert('Please enter your cuisine preference.');
+        return;
+      }
 
-        alert('OTP verified successfully! Redirecting...');
-
-        // Redirect based on role
-        if (selectedRole === 'buyer') {
-          window.location.href = 'buyerDashboard.html';
-        } else {
-          window.location.href = 'sellerDashboard.html';
+      // Validate buyer-specific fields
+      if (selectedRole === 'buyer') {
+        const shopName = document.getElementById('shopName').value;
+        const city = document.getElementById('city').value;
+        const shopAddress = document.getElementById('shopAddress').value;
+        
+        if (!shopName.trim() || !city.trim() || !shopAddress.trim()) {
+          alert('Please fill in all required fields for buyer registration.');
+          return;
         }
+      }
+
+      // Store user data
+      localStorage.setItem('userRole', selectedRole);
+      localStorage.setItem('userPhone', phone);
+      localStorage.setItem('userPassword', password); // In real app, this should be hashed
+      localStorage.setItem('userName', fullName);
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('cuisine', document.getElementById('cuisine').value);
+      localStorage.setItem('isLoggedIn', 'true');
+
+      if (selectedRole === 'buyer') {
+        localStorage.setItem('shopName', document.getElementById('shopName').value);
+        localStorage.setItem('city', document.getElementById('city').value);
+        localStorage.setItem('shopAddress', document.getElementById('shopAddress').value);
+      }
+
+      alert('Account created successfully! You can now login with your phone number and password.');
+
+      // Redirect based on role
+      if (selectedRole === 'buyer') {
+        window.location.href = 'buyerDashboard.html';
       } else {
-        alert('Invalid OTP. Please try again.');
+        window.location.href = 'sellerDashboard.html';
       }
     });
 
