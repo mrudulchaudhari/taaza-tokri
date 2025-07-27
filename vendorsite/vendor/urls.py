@@ -1,8 +1,12 @@
+# vendorsite/vendor/urls.py
 from django.urls import path
 from . import views
 
-
 app_name = 'vendor'
+
 urlpatterns = [
-    path('vendor/', views.vendor_dashboard, name='vendor_dashboard'),
+    path('dashboard/', views.vendor_dashboard, name='dashboard'),
+    path('cart/add/', views.add_to_cart, name='add_to_cart'), # Updated URL
+    path('cart/', views.view_cart, name='view_cart'),
+    path('cart/place-order/', views.place_order, name='place_order'),
 ]
