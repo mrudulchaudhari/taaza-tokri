@@ -1,112 +1,74 @@
+# vendorsite/supplier/views.py
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from listings.models import ProductListing
 from django.db.models import Q
-from .forms import ProductForm
-from .models import Supplier, Order, OrderItem
+from listings.models import ProductListing
+from .models import Order
+from .forms import ProductListingForm
 
 @login_required
 def supplier_dashboard(request):
-    # Renders the main dashboard for the supplier.
-    return render(request, 'supplier/dashboard.html') # CORRECTED: Changed template name for consistency
+    """
+    The main dashboard view for the supplier.
+    Now correctly handles product creation without a vendor link.
+    """
+    # This assumes the logged-in user has a related 'supplier_profile'.
+    # Ensure this link is created upon registration.
+    try:
+        supplier_profile = request.user.supplier_profile
+    except AttributeError:
+        # Handle cases where a non-supplier user might access this page
+        return redirect('some_other_page') # e.g., redirect to home
 
-@login_required
-def supplier_product_list(request):
-    # Fetches and displays a list of products belonging to the logged-in supplier.
-    supplier = get_object_or_404(Supplier, user=request.user)
-    products = ProductListing.objects.filter(supplier=supplier)
-    # CORRECTED: Rendering the correct template and passing 'products' in the context.
-    return render(request, 'supplier/product_list.html', {'products': products}) 
-
-@login_required
-def add_product(request):
-    # Handles the creation of a new product by the supplier.
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        form = ProductListingForm(request.POST)
         if form.is_valid():
             product = form.save(commit=False)
-            supplier = get_object_or_404(Supplier, user=request.user)
-            product.supplier = supplier
+            # CORRECT: A product only needs to be linked to its supplier.
+            product.supplier = supplier_profile
+            # REMOVED: The line linking to a vendor is gone.
             product.save()
-            return redirect('supplier_product_list')
+            return redirect('supplier:dashboard')
     else:
-        form = ProductForm()
-    # CORRECTED: Rendering the correct template for adding a product.
-    return render(request, 'supplier/add_product.html', {'form': form}) 
+        form = ProductListingForm()
+
+    # Fetch data for the dashboard cards
+    products = ProductListing.objects.filter(supplier=supplier_profile)
+    pending_orders = Order.objects.filter(
+        items__product__supplier=supplier_profile,
+        status='Pending'
+    ).distinct()
+
+    context = {
+        'form': form,
+        'products': products,
+        'pending_orders': pending_orders,
+    }
+    return render(request, 'supplier/dashboard.html', context)
 
 @login_required
-def update_product(request, pk):
-    # Handles updating an existing product's details.
-    product = get_object_or_404(ProductListing, pk=pk, supplier__user=request.user)
-    if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
-        if form.is_valid():
-            form.save()
-            return redirect('supplier_product_list')
-    else:
-        form = ProductForm(instance=product)
-    # CORRECTED: Rendering the correct template for updating a product.
-    return render(request, 'supplier/update_product.html', {'form': form}) 
+def update_order_status(request, order_id, new_status):
+    valid_statuses = [status[0] for status in Order.STATUS_CHOICES]
+    if new_status not in valid_statuses:
+        return redirect('supplier:dashboard')
+
+    order = get_object_or_404(
+        Order,
+        id=order_id,
+        items__product__supplier=request.user.supplier_profile
+    )
+    order.status = new_status
+    order.save()
+    return redirect('supplier:dashboard')
 
 @login_required
-def supplier_current_orders(request):
-    """
-    Display active orders containing products from the logged-in supplier.
-    """
-    supplier = get_object_or_404(Supplier, user=request.user)
-    # Find order items linked to this supplier's products and filter for active orders
-    order_items = OrderItem.objects.filter(
-        product__supplier=supplier,
-        order__status__in=['Pending', 'Processing']
-    ).select_related('order', 'product').order_by('-order__created_at')
+def order_history(request):
+    past_orders = Order.objects.filter(
+        items__product__supplier=request.user.supplier_profile
+    ).exclude(
+        Q(status='Pending') | Q(status='Processing')
+    ).distinct().order_by('-created_at')
 
-    # Get the unique orders from the order_items
-    orders = sorted(list(set(item.order for item in order_items)), key=lambda order: order.created_at, reverse=True)
-    
-    return render(request, 'supplier/current_orders.html', {
-        'orders': orders,
-        'order_items': order_items
-    })
-
-@login_required
-def supplier_order_history(request):
-    """
-    Display completed or cancelled orders for the logged-in supplier.
-    """
-    supplier = get_object_or_404(Supplier, user=request.user)
-    # Find order items linked to this supplier's products and filter for past orders
-    order_items = OrderItem.objects.filter(
-        product__supplier=supplier,
-        order__status__in=['Delivered', 'Cancelled'] # Use __in for cleaner filtering
-    ).select_related('order', 'product').order_by('-order__created_at')
-    
-    # Get the unique orders from the order_items
-    orders = sorted(list(set(item.order for item in order_items)), key=lambda order: order.created_at, reverse=True)
-
-    # Pass both orders and order_items to the template
-    return render(request, 'supplier/order_history.html', {
-        'orders': orders,
-        'order_items': order_items
-    })
-
-@login_required
-def update_order_status(request, order_id):
-    """
-    Update the status of an order.
-    """
-    supplier = get_object_or_404(Supplier, user=request.user)
-    order = get_object_or_404(Order, id=order_id)
-
-    # Check if any product in the order belongs to the current supplier
-    if not OrderItem.objects.filter(order=order, product__supplier=supplier).exists():
-        # Handle unauthorized access by redirecting away
-        return redirect('supplier_current_orders') 
-
-    if request.method == 'POST':
-        new_status = request.POST.get('status')
-        # Only allow logical status updates
-        if new_status in ['Processing', 'Shipped']: 
-            order.status = new_status
-            order.save()
-    
-    return redirect('supplier_current_orders')
+    context = { 'orders': past_orders }
+    return render(request, 'supplier/order_history.html', context)

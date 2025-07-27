@@ -1,21 +1,36 @@
-{% extends "supplier/base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h3>Current Stock</h3>
-        <a href="{% url 'add_product' %}" class="btn">Add New Product</a>
-    </div>
-    <hr>
-    <ul style="list-style: none; padding: 0;">
+  <h2>Your Product Listings</h2>
+  <a href="{% url 'supplier:add_product' %}" class="btn btn-primary mb-3">Add New Product</a>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>SKU</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for product in products %}
-        <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
-            {{ product.title }} - <strong>Price:</strong> ₹{{ product.price }} | <strong>Stock:</strong> {{ product.quantity }}
-            <a href="{% url 'update_product' product.pk %}" style="float: right;">Edit</a>
-        </li>
+          <tr>
+            <td>{{ product.title }}</td>
+            <td>{{ product.sku }}</td>
+            <td>${{ product.price }}</td>
+            <td>{{ product.quantity }}</td>
+            <td>
+              <a href="{% url 'supplier:update_product' product.id %}" class="btn btn-secondary btn-sm">Edit</a>
+            </td>
+          </tr>
         {% empty %}
-        <li>You have not added any products yet.</li>
+          <tr>
+            <td colspan="5">You have not added any products yet.</td>
+          </tr>
         {% endfor %}
-    </ul>
-</div>
+      </tbody>
+    </table>
+  </div>
 {% endblock %}
