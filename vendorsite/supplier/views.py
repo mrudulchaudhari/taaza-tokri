@@ -7,33 +7,32 @@ from listings.models import ProductListing
 from .models import Order
 from .forms import ProductListingForm
 
+# vendorsite/supplier/views.py
+
 @login_required
 def supplier_dashboard(request):
-    """
-    The main dashboard view for the supplier.
-    Now correctly handles product creation without a vendor link.
-    """
-    # This assumes the logged-in user has a related 'supplier_profile'.
-    # Ensure this link is created upon registration.
     try:
         supplier_profile = request.user.supplier_profile
     except AttributeError:
-        # Handle cases where a non-supplier user might access this page
-        return redirect('some_other_page') # e.g., redirect to home
+        return redirect('some_other_page')  # or error page
 
     if request.method == 'POST':
         form = ProductListingForm(request.POST)
         if form.is_valid():
             product = form.save(commit=False)
-            # CORRECT: A product only needs to be linked to its supplier.
             product.supplier = supplier_profile
-            # REMOVED: The line linking to a vendor is gone.
+
+            # ✅ ✅ ✅ Debug prints
+            print("SUPPLIER:", supplier_profile)
+            print("VENDOR:", supplier_profile.vendor)
+
+            product.vendor = supplier_profile.vendor
             product.save()
             return redirect('supplier:dashboard')
+
     else:
         form = ProductListingForm()
 
-    # Fetch data for the dashboard cards
     products = ProductListing.objects.filter(supplier=supplier_profile)
     pending_orders = Order.objects.filter(
         items__product__supplier=supplier_profile,
@@ -46,6 +45,7 @@ def supplier_dashboard(request):
         'pending_orders': pending_orders,
     }
     return render(request, 'supplier/dashboard.html', context)
+
 
 @login_required
 def update_order_status(request, order_id, new_status):

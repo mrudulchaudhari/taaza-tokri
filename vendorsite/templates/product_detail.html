@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{{ product.title }} - Vendor Portal</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<!-- Location Bar and Header - same as products.html -->
+<div class="location-bar">
+  <div class="location-content">
+    <span class="location-icon">📍</span>
+    <span class="location-text">Mumbai, Maharashtra</span>
+    <div class="location-weather">
+      <span>🌤️</span>
+      <span>28°C</span>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <nav class="nav">
+    <div class="logo">Foodies</div>
+    <div class="nav-links">
+      <a href="{% url 'listing:browse_all_products' %}">Browse Products</a>
+      <a href="#">Suppliers</a>
+      <a href="{% url 'listing:cart_detail' %}">Cart ({{ cart.get_total_items }})</a>
+      <div class="user-profile-icon" onclick="toggleProfilePopup()">👤</div>
+    </div>
+  </nav>
+</header>
+
+<div class="popup-overlay" id="popupOverlay" onclick="closeProfilePopup()"></div>
+<div class="user-profile-popup" id="userProfilePopup">
+  <div class="popup-header">
+    <div class="popup-title">Vendor Profile</div>
+    <button class="close-popup" onclick="closeProfilePopup()">×</button>
+  </div>
+  <div class="popup-content">
+    <div class="profile-avatar">👤</div>
+    <div class="profile-info">
+      <h3>Welcome, {{ user.username }}!</h3>
+      <p>Vendor Account</p>
+      <p>📍 Mumbai, Maharashtra</p>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="breadcrumb">Dashboard &gt; Suppliers &gt; Product: {{ product.title }}</div>
+  <h1>{{ product.title }}</h1>
+
+  <div class="product-detail">
+
+    <div class="product-image-large">
+      <!-- Customize image or emoji here -->
+      {% if product.cuisine == 'MOMOS' %}🥟{% else %}🍽️{% endif %}
+    </div>
+
+    <div class="product-info">
+      <p><strong>Description:</strong> {{ product.description }}</p>
+      <p><strong>Price:</strong> ₹{{ product.price }}</p>
+      <p><strong>SKU:</strong> {{ product.sku }}</p>
+      <p><strong>Supplier:</strong> {{ product.supplier.name }}</p>
+      {% if product.supplier.city %}<p><small>📍 {{ product.supplier.city }}</small></p>{% endif %}
+      <p><strong>Quantity available:</strong> {{ product.quantity }}</p>
+
+      {% if product.quantity > 0 %}
+      <form method="POST" action="{% url 'listing:cart_add' product.id %}" class="add-to-cart-form" onsubmit="setCartQuantity({{ product.id }})">
+        {% csrf_token %}
+        <div class="quantity-controls">
+          <button type="button" onclick="updateQuantity({{ product.id }}, -1)">-</button>
+          <input type="number" value="1" min="1" max="{{ product.quantity }}" 
+            id="qty-{{ product.id }}" onchange="validateQuantity({{ product.id }}, {{ product.quantity }})" />
+          <button type="button" onclick="updateQuantity({{ product.id }}, 1)">+</button>
+        </div>
+        <input type="hidden" name="quantity" id="cart-qty-{{ product.id }}" value="1">
+        <button type="submit" class="btn btn-primary">Add to Cart</button>
+      </form>
+      {% else %}
+        <button class="btn btn-secondary" disabled>Out of Stock</button>
+      {% endif %}
+    </div>
+
+  </div>
+
+  {% if related_products %}
+    <h2>Related Products from {{ product.supplier.name }}</h2>
+    <div class="products-grid">
+      {% for p in related_products %}
+        <div class="product-card">
+          <div class="product-title">{{ p.title }}</div>
+          <div class="product-price">₹{{ p.price }}</div>
+          <a href="{% url 'listing:product_detail' p.id %}" class="btn btn-outline">View Details</a>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+</div>
+
+<script>
+  const djangoProducts = [{ // only current product needed here
+    id: {{ product.id }},
+    maxQuantity: {{ product.quantity }},
+  }];
+
+  function updateQuantity(productId, delta) {
+    const input = document.getElementById('qty-' + productId);
+    if (!input) return;
+    let val = parseInt(input.value) + delta;
+    if (val < 1) val = 1;
+    const max = {{ product.quantity }};
+    if (val > max) val = max;
+    input.value = val;
+  }
+
+  function validateQuantity(productId, max) {
+    const input = document.getElementById('qty-' + productId);
+    if (!input) return;
+    let val = parseInt(input.value);
+    if (isNaN(val) || val < 1) val = 1;
+    if (val > max) val = max;
+    input.value = val;
+  }
+
+  function setCartQuantity(productId) {
+    const qtyInput = document.getElementById('qty-' + productId);
+    const hiddenInput = document.getElementById('cart-qty-' + productId);
+    if (qtyInput && hiddenInput) {
+      hiddenInput.value = qtyInput.value;
+    }
+  }
+
+  function toggleProfilePopup() {
+    const popup = document.getElementById('userProfilePopup');
+    const overlay = document.getElementById('popupOverlay');
+    if (popup.style.display === 'block') {
+      popup.style.display = 'none';
+      overlay.style.display = 'none';
+    } else {
+      popup.style.display = 'block';
+      overlay.style.display = 'block';
+    }
+  }
+
+  function closeProfilePopup() {
+    document.getElementById('userProfilePopup').style.display = 'none';
+    document.getElementById('popupOverlay').style.display = 'none';
+  }
+</script>
+
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
