@@ -4,20 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Vendor Portal{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/vendor_style.css' %}">
+    <title>{% block title %}Vendor Portal{% endblock %} - TaazaTokri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+        /* CSS for the Navbar, as requested */
+        .logo-title { display: flex; align-items: center; gap: 10px; }
+        .logo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #EDE8D0; color: #333; }
+        header { background-color: #648364; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; color: #f6f2e6; }
+        .nav-buttons a { margin-left: 15px; padding: 8px 15px; background-color: #f6f2e6; color: #648364; text-decoration: none; font-weight: 600; border-radius: 5px; transition: 0.3s ease; }
+        .nav-buttons a:hover { background-color: #4f6f52; color: #f0e9d4; }
+        a { color: #f6f2e6; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* General styles for page content */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+    </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="navbar-brand">🍲 {% block nav_title %}Vendor Portal{% endblock %}</div>
-        <div class="navbar-nav">
+    <header>
+        <div class="logo-title">
+            <img src="{% static 'images/logo2.jpeg' %}" alt="TaazaTokri Logo" class="logo" />
+            <a href="{% url 'landing' %}"><h1 style="font-size: 1.8rem;">{% block nav_title %}Vendor Portal{% endblock %}</h1></a>
+        </div>
+        <div class="nav-buttons">
             <a href="{% url 'vendor:dashboard' %}">Dashboard</a>
             <a href="{% url 'vendor:view_cart' %}">My Cart ({{ request.session.cart|length }})</a>
             <a href="{% url 'vendor:order_history' %}">My Orders</a>
             <a href="{% url 'accounts:logout' %}">Logout</a>
         </div>
-    </nav>
+    </header>
 
     <div class="container">
         {% if messages %}
@@ -30,5 +59,119 @@
         {% endblock %}
     </div>
 
+</body>{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Vendor Portal{% endblock %} - TaazaTokri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+        /* All necessary styles are now directly inside this file */
+        :root {
+            --primary: #648364; /* Green Theme */
+            --background: #EDE8D0; /* Beige Theme */
+            --light-beige: #f6f2e6;
+            --white: #ffffff;
+            --gray: #6c757d;
+            --dark: #333;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: var(--background);
+            color: var(--dark);
+        }
+        /* Navbar Styles */
+        header {
+            background-color: var(--primary);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--light-beige);
+        }
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        header h1 {
+            font-size: 1.8rem;
+            color: var(--light-beige);
+        }
+        .nav-buttons a {
+            margin-left: 15px;
+            padding: 8px 15px;
+            background-color: var(--light-beige);
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+        .nav-buttons a:hover {
+            background-color: #4f6f52;
+            color: var(--light-beige);
+        }
+        a {
+            color: var(--light-beige);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* General Page Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-title">
+            <img src="{% static 'images/logo2.jpeg' %}" alt="TaazaTokri Logo" class="logo" />
+            <a href="{% url 'landing' %}"><h1>{% block nav_title %}Vendor Dashboard{% endblock %}</h1></a>
+        </div>
+        <div class="nav-buttons">
+            <a href="{% url 'vendor:dashboard' %}">Dashboard</a>
+            <a href="{% url 'vendor:view_cart' %}">My Cart ({{ request.session.cart|length }})</a>
+            <a href="{% url 'vendor:order_history' %}">My Orders</a>
+            <a href="{% url 'accounts:logout' %}">Logout</a>
+        </div>
+    </header>
+
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
 </body>
+</html>
 </html>

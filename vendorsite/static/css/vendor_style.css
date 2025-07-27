@@ -1,19 +1,21 @@
 /* static/css/vendor_style.css */
 
 :root {
-    --primary: #fc8a06;
-    --background: #f8f9fa;
+    --primary: #648364; /* Green from your supplier theme */
+    --background: #EDE8D0; /* Beige from your supplier theme */
     --white: #ffffff;
     --gray: #6c757d;
     --dark: #343a40;
-    --green: #28a745;
+    --primary-light: #8a9a8a;
 }
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
     background-color: var(--background);
     margin: 0;
     color: var(--dark);
 }
+
 .navbar {
     background-color: var(--white);
     padding: 1rem 2rem;
@@ -22,11 +24,13 @@ body {
     justify-content: space-between;
     align-items: center;
 }
+
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--primary);
 }
+
 .navbar-nav a {
     color: var(--gray);
     text-decoration: none;
@@ -34,14 +38,17 @@ body {
     margin-left: 1.5rem;
     transition: color 0.2s;
 }
+
 .navbar-nav a:hover {
-    color: var(--dark);
+    color: var(--primary);
 }
+
 .container {
     max-width: 1200px;
     margin: 2rem auto;
     padding: 0 2rem;
 }
+
 .welcome-header {
     background-color: var(--white);
     padding: 2rem;
@@ -49,13 +56,16 @@ body {
     margin-bottom: 2rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
+
 .welcome-header h1 { margin: 0; color: var(--dark); }
 .welcome-header p { font-size: 1.1rem; color: var(--gray); }
+
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
 }
+
 .product-card {
     background: var(--white);
     border-radius: 8px;
@@ -63,19 +73,55 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     display: flex;
     flex-direction: column;
+    transition: transform 0.2s;
 }
-.product-card:hover { transform: translateY(-5px); transition: transform 0.2s; }
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
 .product-card-body { padding: 1.5rem; flex-grow: 1; }
-.product-card h3 { margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem; }
+.product-card h3 { margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem; color: var(--primary); }
 .product-card p { margin-bottom: 0.25rem; color: var(--gray); }
 .product-card-footer { background-color: #fcfcfc; padding: 1rem 1.5rem; border-top: 1px solid #f0f0f0; }
-.btn-add-to-cart { display: inline-block; background-color: var(--primary); color: var(--white); padding: 0.6rem 1.2rem; border-radius: 5px; text-decoration: none; font-weight: 500; border: none; cursor: pointer; }
+
+.btn-add-to-cart {
+    display: inline-block;
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+}
 
 /* === ORDER HISTORY STYLES === */
-.order-card { background-color: var(--white); border-radius: 8px; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
-.order-header { padding: 1rem 1.5rem; background-color: #fdfdfd; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-.order-header h3 { margin: 0; font-size: 1.1rem; }
+.order-card {
+    background-color: var(--white);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.order-header {
+    padding: 1rem 1.5rem;
+    background-color: #fdfdfd;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.order-header h3 { margin: 0; font-size: 1.1rem; color: var(--primary); }
 .order-header span { font-size: 0.9rem; color: var(--gray); }
 .order-body { padding: 1.5rem; }
 .order-item { display: flex; justify-content: space-between; padding: 0.5rem 0; }
-.btn-receive { background-color: var(--green); color: var(--white); padding: 0.5rem 1rem; border-radius: 5px; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+.btn-receive {
+    background-color: #28a745;
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+}

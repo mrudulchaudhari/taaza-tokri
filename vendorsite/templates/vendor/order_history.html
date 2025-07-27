@@ -1,35 +1,153 @@
-{% extends 'vendor/base_vendor.html' %}
-
-{% block title %}My Order History{% endblock %}
-{% block nav_title %}🛍️ My Orders{% endblock %}
-
-{% block content %}
-    {% for order in orders %}
-        <div class="order-card">
-            <div class="order-header">
-                <h3>Order #{{ order.id }}</h3>
-                <span>Status: <strong>{{ order.status }}</strong></span>
-                <span>Placed on: {{ order.created_at|date:"F d, Y" }}</span>
-            </div>
-            <div class="order-body">
-                {% for item in order.items.all %}
-                    <div class="order-item">
-                        <span>{{ item.quantity }} x {{ item.product.title }} (by {{ item.product.supplier.name }})</span>
-                        <span>${{ item.price }}</span>
-                    </div>
-                {% endfor %}
-                {% if order.status == 'Shipped' %}
-                    <div style="text-align: right; margin-top: 1rem;">
-                        <a href="{% url 'vendor:mark_delivered' order.id %}" class="btn-receive">✓ Mark as Received</a>
-                    </div>
-                {% endif %}
-            </div>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Order History</title>
+    <style>
+        :root {
+            --primary: #648364;
+            --background: #EDE8D0;
+            --white: #ffffff;
+            --gray: #6c757d;
+            --dark: #333;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+        }
+        header {
+            background-color: var(--primary);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #f6f2e6;
+        }
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        header h1 {
+            font-size: 1.7rem;
+            color: #f6f2e6;
+            margin: 0;
+            line-height: 1;
+        }
+        .nav-buttons a {
+            margin-left: 15px;
+            padding: 8px 15px;
+            background-color: #f6f2e6;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+        .nav-buttons a:hover {
+            background-color: #4f6f52;
+            color: #f0e9d4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .order-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        .order-header {
+            background-color: var(--primary);
+            color: #f6f2e6;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .order-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        .order-body {
+            padding: 1.5rem;
+            background-color: var(--background);
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #ccc;
+            color: var(--gray);
+        }
+        .btn-receive {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s ease;
+        }
+        .btn-receive:hover {
+            background-color: #4f6f52;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-title">
+            <img src="{% static 'images/logo2.jpeg' %}" alt="TaazaTokri Logo" class="logo" />
+            <h1>🛍️ My Orders</h1>
         </div>
-    {% empty %}
-        <div class="order-card">
-            <div class="order-body" style="text-align: center;">
-                <p>You have not placed any orders yet.</p>
-            </div>
+        <div class="nav-buttons">
+            <a href="{% url 'vendor:dashboard' %}">← Dashboard</a>
+            <a href="{% url 'accounts:logout' %}">Logout</a>
         </div>
-    {% endfor %}
-{% endblock %}
+    </header>
+
+    <div class="container">
+        {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <h3>Order #{{ order.id }}</h3>
+                    <span>Status: <strong>{{ order.status }}</strong></span>
+                    <span>Placed on: {{ order.created_at|date:"F d, Y" }}</span>
+                </div>
+                <div class="order-body">
+                    {% for item in order.items.all %}
+                        <div class="order-item">
+                            <span>{{ item.quantity }} × {{ item.product.title }} (by {{ item.product.supplier.name }})</span>
+                            <span>${{ item.price }}</span>
+                        </div>
+                    {% endfor %}
+                    {% if order.status == 'Shipped' %}
+                        <div style="text-align: right; margin-top: 1rem;">
+                            <a href="{% url 'vendor:mark_delivered' order.id %}" class="btn-receive">✓ Mark as Received</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="order-card">
+                <div class="order-body" style="text-align: center;">
+                    <p>You have not placed any orders yet.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

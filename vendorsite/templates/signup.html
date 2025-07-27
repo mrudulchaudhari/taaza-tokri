@@ -1,21 +1,213 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="container" style="max-width: 500px; margin: 5rem auto;">
-    <h2>Create Your Account</h2>
-    <p>First, tell us your phone number and whether you are a buyer or a seller.</p>
-    {% if messages %}{% for message in messages %}<div class="alert alert-danger">{{ message }}</div>{% endfor %}{% endif %}
-    <form method="post" action="{% url 'accounts:signup_start' %}">
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - TaazaTokri</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #EDE8D0;
+      color: #333;
+    }
+
+    header {
+      background-color: #648364;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #f6f2e6;
+    }
+
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .nav-buttons a {
+      margin-left: 15px;
+      padding: 8px 15px;
+      background-color: #f6f2e6;
+      color: #648364;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 5px;
+      transition: 0.3s ease;
+    }
+
+    .nav-buttons a:hover {
+      background-color: #4f6f52;
+      color: #f0e9d4;
+    }
+
+    .form-container {
+      background-color: #f6f2e6;
+      margin: 4rem auto;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .form-container h2 {
+      color: #648364;
+      margin-bottom: 10px;
+    }
+
+    .form-container p {
+      color: #555;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+    }
+
+    .form-group input[type="tel"] {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-top: 8px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .radio-option input[type="radio"] {
+      transform: scale(1.2);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background-color: #648364;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      background-color: #4f6f52;
+    }
+
+    .alert-danger {
+      color: #9c2b2b;
+      background-color: #f8d7da;
+      padding: .75rem;
+      margin-bottom: 1rem;
+      border-radius: .25rem;
+      text-align: left;
+    }
+
+    .alternative-link {
+      margin-top: 20px;
+    }
+
+    .alternative-link a {
+      color: #648364;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+    a { color: #f6f2e6; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-title">
+      <img src="{% static 'images/logo2.jpeg' %}" alt="TaazaTokri Logo" class="logo" />
+      <a href="{% url 'landing' %}"><h1>TaazaTokri</h1></a>
+    </div>
+    <div class="nav-buttons">
+      <a href="{% url 'accounts:login' %}">Login</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <h2>Create Your Account</h2>
+      <p>Select your role and enter your phone number to begin.</p>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert-danger">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" action="{% url 'accounts:signup_start' %}">
         {% csrf_token %}
-        <div class="mb-3">
-            <label for="phone_number" class="form-label">10-Digit Phone Number</label>
-            <input type="tel" name="phone_number" class="form-control" required pattern="[0-9]{10}">
+        <div class="form-group">
+          <label for="phone_number">10-Digit Phone Number</label>
+          <input type="tel" name="phone_number" id="phone_number" required pattern="[0-9]{10}" placeholder="Enter your phone number">
         </div>
-        <div class="mb-3">
-            <label class="form-label">I am a:</label><br>
-            <input type="radio" name="role" value="buyer" required> Buyer (Vendor)
-            <input type="radio" name="role" value="seller" required> Seller (Supplier)
+
+        <div class="form-group">
+          <label>I am a:</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="role" value="buyer" id="role_buyer" required>
+              <label for="role_buyer">Buyer (Vendor)</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="role" value="seller" id="role_seller" required>
+              <label for="role_seller">Seller (Supplier)</label>
+            </div>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary">Continue</button>
-    </form>
-</div>
-{% endblock %}
+
+        <button type="submit" class="btn-submit">Continue</button>
+      </form>
+
+      <div class="alternative-link">
+        <p>Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

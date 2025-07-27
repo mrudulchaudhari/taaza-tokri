@@ -1,11 +1,108 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div class="container" style="max-width: 500px; margin: 5rem auto;">
+<style>
+    body {
+        background-color: #EDE8D0;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .form-container {
+        background-color: #f6f2e6;
+        max-width: 500px;
+        margin: 5rem auto;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h2 {
+        color: #648364;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .form-container label {
+        display: block;
+        margin: 10px 0 5px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .form-container input,
+    .form-container textarea,
+    .form-container select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .form-container .helptext,
+    .form-container ul {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .btn-submit {
+        margin-top: 20px;
+        width: 100%;
+        background-color: #648364;
+        color: white;
+        font-weight: 600;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-submit:hover {
+        background-color: #4f6f52;
+    }
+
+    .back-link {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .back-link a {
+        color: #648364;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .back-link a:hover {
+        text-decoration: underline;
+    }
+    a { color: #f6f2e6; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+</style>
+
+<header style="background-color: #648364; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; color: #f6f2e6;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <img src="{% static 'images/logo2.jpeg' %}" alt="TaazaTokri Logo" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" />
+        <a href="{% url 'landing' %}" style="color: inherit; text-decoration: none;"><h1 style="margin: 0;">TaazaTokri</h1></a>
+    </div>
+    <div class="nav-buttons">
+        <a href="{% url 'accounts:login' %}" style="background-color: #f6f2e6; color: #648364; text-decoration: none; font-weight: 600; border-radius: 5px; padding: 8px 15px;">Login</a>
+    </div>
+</header>
+
+<div class="form-container">
     <h2>Complete Your Profile</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Sign Up</button>
+        <button type="submit" class="btn-submit">Sign Up</button>
     </form>
+    <div class="back-link">
+        <p><a href="{% url 'accounts:signup_start' %}">← Back to Role Selection</a></p>
+    </div>
 </div>
 {% endblock %}
