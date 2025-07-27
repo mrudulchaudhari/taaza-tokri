@@ -16,17 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings
+from django.shortcuts import redirect
+from django.conf import settings       # <-- add this
 from django.conf.urls.static import static
-from . import views
+def home_redirect(request):
+    return redirect('vendor_dashboard')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('vendor.urls')),
+    path('', home_redirect),
     path('supplier/', include('supplier.urls')),
     path('listings/', include('listings.urls')),
     path('accounts/', include('accounts.urls')),
-
+    path('reviews/', include('reviews.urls')),
+    path('vendor/', include('vendor.urls')),
 ]
 
 if settings.DEBUG:
