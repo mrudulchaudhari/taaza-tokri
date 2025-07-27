@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products</title>
+    <title>Browse All Products - Vendor Portal</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -24,10 +24,9 @@
         <nav class="nav">
             <div class="logo">Foodies</div>
             <div class="nav-links">
-                <a href="{% url 'listing:list_materials' %}">Home</a>
-                <a href="#">Sellers</a>
-                <a href="{% url 'listing:products' %}" class="active">Products</a>
-                <a href="{% url 'listing:cart_detail' %}">Cart</a>
+                <a href="{% url 'listing:browse_all_products' %}" class="active">Browse Products</a>
+                <a href="#">Suppliers</a>
+                <a href="{% url 'listing:cart_detail' %}">Cart ({{ cart.get_total_items }})</a>
                 <div class="user-profile-icon" onclick="toggleProfilePopup()">👤</div>
             </div>
         </nav>
@@ -37,14 +36,14 @@
     <div class="popup-overlay" id="popupOverlay" onclick="closeProfilePopup()"></div>
     <div class="user-profile-popup" id="userProfilePopup">
         <div class="popup-header">
-            <div class="popup-title">User Profile</div>
+            <div class="popup-title">Vendor Profile</div>
             <button class="close-popup" onclick="closeProfilePopup()">×</button>
         </div>
         <div class="popup-content">
             <div class="profile-avatar">👤</div>
             <div class="profile-info">
-                <h3>Welcome, Foodie!</h3>
-                <p>Premium Buyer</p>
+                <h3>Welcome, {{ user.username }}!</h3>
+                <p>Vendor Account</p>
                 <p>📍 Mumbai, Maharashtra</p>
             </div>
         </div>
@@ -52,99 +51,168 @@
 
     <div class="container">
         <div class="page-header">
-            <div class="breadcrumb">Dashboard > Sellers > Products</div>
-            <h1 class="page-title">Fresh Products</h1>
-            <div class="vendor-info" id="vendorInfo">
-                <!-- Vendor info will be populated by JavaScript -->
-            </div>
+            <div class="breadcrumb">Dashboard > Suppliers > All Products</div>
+            <h1 class="page-title">Browse All Products from Suppliers</h1>
+            <p class="page-subtitle">Find ingredients and supplies from all our verified suppliers</p>
         </div>
 
-        <div class="filters-section">
+        <!-- Search and Filters Form -->
+        <form method="GET" class="filters-section">
             <div class="filters-grid">
                 <div class="filter-group">
                     <label class="filter-label">Search Products</label>
                     <div class="search-box">
                         <span class="search-icon">🔍</span>
-                        <input type="text" class="search-input" placeholder="Search products..." id="searchInput">
+                        <input type="text" name="search" class="search-input" 
+                               placeholder="Search by name, SKU, or supplier..." 
+                               value="{{ search_query }}" id="searchInput">
                     </div>
                 </div>
                 
                 <div class="filter-group">
-                    <label class="filter-label">Category</label>
-                    <select class="filter-select" id="categoryFilter">
-                        <option value="all">All Categories</option>
-                        <option value="vegetables">Vegetables</option>
-                        <option value="fruits">Fruits</option>
-                        <option value="dairy">Dairy</option>
-                        <option value="spices">Spices</option>
-                        <option value="grains">Grains</option>
+                    <label class="filter-label">Cuisine Type</label>
+                    <select name="cuisine" class="filter-select" id="cuisineFilter">
+                        <option value="">All Cuisines</option>
+                        {% for key, value in cuisine_choices %}
+                            <option value="{{ key }}" {% if cuisine_filter == key %}selected{% endif %}>
+                                {{ value }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Supplier</label>
+                    <select name="supplier" class="filter-select" id="supplierFilter">
+                        <option value="">All Suppliers</option>
+                        {% for supplier in suppliers %}
+                            <option value="{{ supplier.id }}" {% if supplier_filter == supplier.id|stringformat:"s" %}selected{% endif %}>
+                                {{ supplier.name }}
+                            </option>
+                        {% endfor %}
                     </select>
                 </div>
                 
                 <div class="filter-group">
                     <label class="filter-label">Sort By</label>
-                    <select class="filter-select" id="sortSelect">
-                        <option value="name">Name</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="popular">Most Popular</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <label class="filter-label">Price Range</label>
-                    <select class="filter-select" id="priceFilter">
-                        <option value="all">All Prices</option>
-                        <option value="0-50">Under ₹50</option>
-                        <option value="50-100">₹50 - ₹100</option>
-                        <option value="100-200">₹100 - ₹200</option>
-                        <option value="200+">Above ₹200</option>
+                    <select name="sort" class="filter-select" id="sortSelect" onchange="this.form.submit()">
+                        <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Name A-Z</option>
+                        <option value="-title" {% if sort_by == '-title' %}selected{% endif %}>Name Z-A</option>
+                        <option value="price" {% if sort_by == 'price' %}selected{% endif %}>Price: Low to High</option>
+                        <option value="-price" {% if sort_by == '-price' %}selected{% endif %}>Price: High to Low</option>
+                        <option value="supplier__name" {% if sort_by == 'supplier__name' %}selected{% endif %}>Supplier A-Z</option>
+                        <option value="-updated_at" {% if sort_by == '-updated_at' %}selected{% endif %}>Recently Updated</option>
                     </select>
                 </div>
             </div>
-        </div>
-
-        <div class="category-tabs" id="categoryTabs">
-            <!-- Category tabs will be populated by JavaScript -->
-        </div>
+            
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <a href="{% url 'listing:browse_all_products' %}" class="btn btn-secondary">Clear All</a>
+            </div>
+            
+            <!-- Hidden price range inputs -->
+            <div class="price-range-filters" style="display: none;">
+                <input type="number" name="min_price" placeholder="Min Price" step="0.01" value="{{ min_price }}">
+                <input type="number" name="max_price" placeholder="Max Price" step="0.01" value="{{ max_price }}">
+            </div>
+        </form>
 
         <div class="results-info">
-            <span id="resultsCount">Showing {{ products|length }} products</span>
-            <span>Filtered by your preferences</span>
+            <span id="resultsCount">
+                Showing {{ products|length }} of {{ total_products }} products
+                {% if search_query %}for "{{ search_query }}"{% endif %}
+            </span>
+            <span>From all verified suppliers</span>
         </div>
 
         <div class="products-grid" id="productsGrid">
             {% for product in products %}
-                <div class="product-card">
-                    <div class="product-badge">{{ product.badge|default:"Fresh" }}</div>
-                    <div class="product-image">{{ product.image|default:"🥬" }}</div>
-                    <div class="product-title">{{ product.name }}</div>
-                    <div class="product-description">{{ product.description }}</div>
+                <div class="product-card" data-product-id="{{ product.id }}">
+                    <div class="product-badge">
+                        {% if product.cuisine %}{{ product.get_cuisine_display }}{% else %}Fresh{% endif %}
+                    </div>
+                    <div class="product-image">
+                        {% if product.cuisine == 'VEGETABLES' %}🥬
+                        {% elif product.cuisine == 'FRUITS' %}🍎
+                        {% elif product.cuisine == 'DAIRY' %}🥛
+                        {% elif product.cuisine == 'SPICES' %}🌶️
+                        {% elif product.cuisine == 'GRAINS' %}🌾
+                        {% else %}🍽️{% endif %}
+                    </div>
+                    <div class="product-title">{{ product.title }}</div>
+                    <div class="product-description">{{ product.description|truncatewords:10 }}</div>
+                    
+                    <div class="supplier-info">
+                        <strong>Supplier:</strong> {{ product.supplier.name }}
+                        {% if product.supplier.city %}
+                            <br><small>📍 {{ product.supplier.city }}</small>
+                        {% endif %}
+                    </div>
+                    
                     <div class="product-meta">
                         <div>
                             <div class="product-price">₹{{ product.price }}</div>
-                            <div class="product-unit">{{ product.unit|default:"per kg" }}</div>
+                            <div class="product-unit">SKU: {{ product.sku }}</div>
                         </div>
-                        <div class="product-stock">{{ product.stock|default:"In Stock" }}</div>
+                        <div class="product-stock">
+                            {% if product.quantity > 0 %}
+                                {{ product.quantity }} in stock
+                            {% else %}
+                                Out of Stock
+                            {% endif %}
+                        </div>
                     </div>
+                    
                     <div class="product-actions">
-                        <div class="quantity-controls">
-                            <button class="quantity-btn" onclick="updateQuantity({{ product.id }}, -1)">-</button>
-                            <input type="number" class="quantity-input" value="0" min="0" 
-                                   id="qty-{{ product.id }}" onchange="updateQuantity({{ product.id }}, 0)">
-                            <button class="quantity-btn" onclick="updateQuantity({{ product.id }}, 1)">+</button>
-                        </div>
-                        <button class="btn" onclick="addToCart({{ product.id }})">Add to Cart</button>
+                        {% if product.quantity > 0 %}
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateQuantity({{ product.id }}, -1)">-</button>
+                                <input type="number" class="quantity-input" value="1" min="1" max="{{ product.quantity }}"
+                                       id="qty-{{ product.id }}" onchange="validateQuantity({{ product.id }}, {{ product.quantity }})">
+                                <button class="quantity-btn" onclick="updateQuantity({{ product.id }}, 1)">+</button>
+                            </div>
+                            <form method="POST" action="{% url 'listing:cart_add' product.id %}" class="add-to-cart-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" id="cart-qty-{{ product.id }}" value="1">
+                                <button type="submit" class="btn btn-primary" onclick="setCartQuantity({{ product.id }})">
+                                    Add to Cart
+                                </button>
+                            </form>
+                        {% else %}
+                            <button class="btn btn-secondary" disabled>Out of Stock</button>
+                        {% endif %}
+                        
+                        <a href="{% url 'listing:product_detail' product.id %}" class="btn btn-outline">View Details</a>
                     </div>
                 </div>
             {% empty %}
                 <div class="empty-products">
                     <div class="empty-icon">📦</div>
-                    <h3>No products available</h3>
-                    <p>Check back later for fresh products!</p>
+                    <h3>No products found</h3>
+                    <p>Try adjusting your search criteria or filters.</p>
                 </div>
             {% endfor %}
         </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1" class="pagination-btn">« First</a>
+                    <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" class="pagination-btn">‹ Previous</a>
+                {% endif %}
+
+                <span class="pagination-current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" class="pagination-btn">Next ›</a>
+                    <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}" class="pagination-btn">Last »</a>
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
 
     <!-- Pass Django data to JavaScript -->
@@ -154,17 +222,57 @@
             {% for product in products %}
             {
                 id: {{ product.id }},
-                name: "{{ product.name|escapejs }}",
+                name: "{{ product.title|escapejs }}",
                 description: "{{ product.description|escapejs }}",
                 price: {{ product.price }},
-                unit: "{{ product.unit|default:'per kg'|escapejs }}",
-                category: "{{ product.category|default:'vegetables'|escapejs }}",
-                stock: "{{ product.stock|default:'In Stock'|escapejs }}",
-                image: "{{ product.image|default:'🥬'|escapejs }}",
-                badge: "{{ product.badge|default:'Fresh'|escapejs }}"
+                sku: "{{ product.sku|escapejs }}",
+                supplier: "{{ product.supplier.name|escapejs }}",
+                cuisine: "{{ product.cuisine|escapejs }}",
+                stock: {{ product.quantity }},
+                maxQuantity: {{ product.quantity }}
             }{% if not forloop.last %},{% endif %}
             {% endfor %}
         ];
+
+        // Quantity management functions
+        function updateQuantity(productId, change) {
+            const input = document.getElementById(`qty-${productId}`);
+            const product = djangoProducts.find(p => p.id === productId);
+            let newValue = parseInt(input.value) + change;
+            
+            if (newValue < 1) newValue = 1;
+            if (newValue > product.maxQuantity) newValue = product.maxQuantity;
+            
+            input.value = newValue;
+        }
+
+        function validateQuantity(productId, maxQuantity) {
+            const input = document.getElementById(`qty-${productId}`);
+            let value = parseInt(input.value);
+            
+            if (value < 1) value = 1;
+            if (value > maxQuantity) value = maxQuantity;
+            
+            input.value = value;
+        }
+
+        function setCartQuantity(productId) {
+            const qty = document.getElementById(`qty-${productId}`).value;
+            document.getElementById(`cart-qty-${productId}`).value = qty;
+        }
+
+        // Profile popup functions
+        function toggleProfilePopup() {
+            const popup = document.getElementById('userProfilePopup');
+            const overlay = document.getElementById('popupOverlay');
+            popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+            overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function closeProfilePopup() {
+            document.getElementById('userProfilePopup').style.display = 'none';
+            document.getElementById('popupOverlay').style.display = 'none';
+        }
     </script>
     <script src="{% static 'js/script.js' %}"></script>
 </body>
