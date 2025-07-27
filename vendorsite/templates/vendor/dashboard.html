@@ -1,80 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vendor Dashboard</title>
-    <style>
-        :root { --primary: #fc8a06; --background: #f8f9fa; --white: #ffffff; --gray: #6c757d; --dark: #343a40; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--background); margin: 0; color: var(--dark); }
-        .navbar { background-color: var(--white); padding: 1rem 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
-        .navbar-brand { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
-        .navbar-nav a { color: var(--gray); text-decoration: none; font-weight: 500; margin-left: 1.5rem; }
-        .container { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
-        .welcome-header { background-color: var(--white); padding: 2rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .welcome-header h1 { margin: 0; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-        .product-card { background: var(--white); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; }
-        .product-card-body { padding: 1.5rem; flex-grow: 1; }
-        .product-card h3 { margin-top: 0; }
-        .product-card p { margin-bottom: 0.25rem; color: var(--gray); }
-        .product-card-footer { background-color: #fcfcfc; padding: 1rem 1.5rem; border-top: 1px solid #f0f0f0; }
-        .price { font-size: 1.2rem; font-weight: bold; color: var(--dark); }
-        .quantity-selector { display: flex; align-items: center; gap: 0.5rem; }
-        .quantity-selector button { width: 30px; height: 30px; border: 1px solid #ddd; background: #f5f5f5; cursor: pointer; font-size: 1.2rem; }
-        .quantity-selector input { width: 50px; text-align: center; border: 1px solid #ddd; height: 30px; }
-        .add-to-cart-form { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
-        .btn-add-to-cart { background-color: var(--primary); color: var(--white); padding: 0.6rem 1.2rem; border-radius: 5px; text-decoration: none; font-weight: 500; border: none; cursor: pointer; }
-        .alert { padding: 1rem; margin-bottom: 1rem; border-radius: 5px; background-color: #d1ecf1; color: #0c5460; }
-    </style>
-</head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-brand">🍲 Vendor Dashboard</div>
-        <div class="navbar-nav">
-            <a href="{% url 'vendor:view_cart' %}">My Cart ({{ cart|length }})</a>
-            <a href="{% url 'vendor:order_history' %}">My Orders</a>
-            <a href="{% url 'accounts:logout' %}">Logout</a>
-        </div>
-    </nav>
-    <div class="container">
-        <header class="welcome-header">
-            <h1>Welcome, {{ user.vendor_profile.shop_name }}!</h1>
-            <p>Products available in <strong>{{ vendor_city|default:"your area" }}</strong>.</p>
-        </header>
+{% extends 'vendor/base_vendor.html' %}
 
-        {% if messages %}{% for message in messages %}<div class="alert">{{ message }}</div>{% endfor %}{% endif %}
+{% block title %}Vendor Dashboard{% endblock %}
+{% block nav_title %}Vendor Dashboard{% endblock %}
 
-        <main class="product-grid">
-            {% for product in products %}
-                <div class="product-card">
-                    <div class="product-card-body">
-                        <h3>{{ product.title }}</h3>
-                        <p><strong>Supplier:</strong> {{ product.supplier.name }}</p>
-                        <p><strong>Cuisine:</strong> {{ product.get_cuisine_display }}</p>
-                        <p><strong>Available:</strong> {{ product.quantity }} units</p>
-                    </div>
-                    <div class="product-card-footer">
-                        <form method="post" action="{% url 'vendor:add_to_cart' %}" class="add-to-cart-form">
-                            {% csrf_token %}
-                            <input type="hidden" name="product_id" value="{{ product.id }}">
-                            <div class="price">${{ product.price }}</div>
-                            <div class="quantity-selector">
-                                <button type="button" onclick="this.nextElementSibling.stepDown()">-</button>
-                                <input type="number" name="quantity" value="1" min="1" max="{{ product.quantity }}" readonly>
-                                <button type="button" onclick="this.previousElementSibling.stepUp()">+</button>
-                            </div>
-                            <button type="submit" class="btn-add-to-cart">Buy</button>
-                        </form>
-                    </div>
+{% block content %}
+    <header class="welcome-header">
+        <h1>Welcome, {{ user.vendor_profile.shop_name }}!</h1>
+        <p>Products available in <strong>{{ vendor_city|default:"your area" }}</strong>.</p>
+    </header>
+
+    <main class="product-grid">
+        {% for product in products %}
+            <div class="product-card">
+                <div class="product-card-body">
+                    <h3>{{ product.title }}</h3>
+                    <p><strong>Supplier:</strong> {{ product.supplier.name }}</p>
+                    <p><strong>Cuisine:</strong> {{ product.get_cuisine_display }}</p>
+                    <p><strong>Available:</strong> {{ product.quantity }} units</p>
                 </div>
-            {% empty %}
-                <div class="welcome-header" style="grid-column: 1 / -1;">
-                    <h2>No Products Found</h2>
-                    <p>There are currently no products listed by suppliers in your city.</p>
+                <div class="product-card-footer">
+                    <form method="post" action="{% url 'vendor:add_to_cart' %}" class="add-to-cart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <span class="price">${{ product.price }}</span>
+                        <button type="submit" class="btn-add-to-cart">Add to Cart</button>
+                    </form>
                 </div>
-            {% endfor %}
-        </main>
-    </div>
-</body>
-</html>
+            </div>
+        {% empty %}
+            <div class="welcome-header" style="grid-column: 1 / -1;">
+                <h2>No Products Found</h2>
+                <p>There are currently no products listed by suppliers in your city.</p>
+            </div>
+        {% endfor %}
+    </main>
+{% endblock %}
