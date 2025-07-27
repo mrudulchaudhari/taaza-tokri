@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Shopping Cart</title>
+    <style>
+        :root { --primary: #fc8a06; --background: #f8f9fa; --white: #ffffff; --gray: #6c757d; --dark: #343a40; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--background); margin: 0; color: var(--dark); }
+        .navbar { background-color: var(--white); padding: 1rem 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .navbar-brand { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        .navbar-nav a { color: var(--gray); text-decoration: none; font-weight: 500; margin-left: 1.5rem; }
+        .container { max-width: 900px; margin: 2rem auto; padding: 2rem; background-color: var(--white); border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .cart-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+        .cart-table thead { border-bottom: 2px solid var(--dark); }
+        .cart-table th { text-align: left; padding: 0.75rem; color: var(--gray); }
+        .cart-table td { padding: 1rem 0.75rem; border-bottom: 1px solid #eee; }
+        .cart-summary { text-align: right; margin-top: 2rem; }
+        .cart-summary h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .btn-primary { background-color: var(--primary); color: var(--white); padding: 0.75rem 1.5rem; border: none; border-radius: 5px; text-decoration: none; font-weight: 500; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">🍲 Your Cart</div>
+        <div class="navbar-nav">
+            <a href="{% url 'vendor:dashboard' %}">&larr; Continue Shopping</a>
+            <a href="{% url 'accounts:logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Shopping Cart</h2>
+
+        {% if cart %}
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th style="text-align: right;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product_id, item in cart.items %}
+                    <tr>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td style="text-align: right;">${{ item.price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="cart-summary">
+                <h3>Total: ${{ total_price|floatformat:2 }}</h3>
+                <a href="{% url 'vendor:place_order' %}" class="btn-primary">Place Order</a>
+            </div>
+        {% else %}
+            <p style="margin-top: 1.5rem;">Your cart is empty.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
