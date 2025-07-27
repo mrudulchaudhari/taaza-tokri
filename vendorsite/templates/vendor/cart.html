@@ -169,13 +169,13 @@
                     <tr>
                         <td>{{ item.title }}</td>
                         <td>{{ item.quantity }}</td>
-                        <td>${{ item.price }}</td>
+                        <td>₹{{ item.price }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
             <div class="cart-summary">
-                <h3>Total: ${{ total_price|floatformat:2 }}</h3>
+                <h3>Total: ₹{{ total_price|floatformat:2 }}</h3>
                 <a href="{% url 'vendor:place_order' %}" class="btn-primary">Place Order</a>
             </div>
         {% else %}

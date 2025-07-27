@@ -131,7 +131,7 @@
                     {% for item in order.items.all %}
                         <div class="order-item">
                             <span>{{ item.quantity }} × {{ item.product.title }} (by {{ item.product.supplier.name }})</span>
-                            <span>${{ item.price }}</span>
+                            <span>₹{{ item.price }}</span>
                         </div>
                     {% endfor %}
                     {% if order.status == 'Shipped' %}
