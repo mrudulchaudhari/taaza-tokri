@@ -1,250 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - TaazaTokri</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    body {
-      background-color: #EDE8D0;
-      color: #333;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    a {
-      color: #f6f2e6;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    header {
-      background-color: #648364;
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      color: #f6f2e6;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 100;
-    }
-
-    .logo-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo-title h1 {
-      font-size: 24px;
-    }
-
-    .logo {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .nav-buttons a {
-      margin-left: 15px;
-      padding: 8px 15px;
-      background-color: #f6f2e6;
-      color: #648364;
-      text-decoration: none;
-      font-weight: 600;
-      border-radius: 5px;
-      transition: 0.3s ease;
-    }
-
-    .nav-buttons a:hover {
-      background-color: #4f6f52;
-      color: #f0e9d4;
-    }
-
-    .login-container {
-      background-color: white;
-      margin-top: 140px;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 450px;
-      text-align: center;
-    }
-
-    .login-header h1 {
-      color: #333;
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-
-    .login-header p {
-      color: #666;
-      font-size: 16px;
-      margin-bottom: 30px;
-    }
-
-    .form-group {
-      margin-bottom: 25px;
-      text-align: left;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: #555;
-      font-weight: 500;
-    }
-
-    .phone-input {
-      display: flex;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .country-code {
-      padding: 12px 15px;
-      background-color: #f5f5f5;
-      border-right: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-    }
-
-    .form-group input {
-      flex: 1;
-      padding: 12px 15px;
-      border: none;
-      font-size: 16px;
-      width: 100%;
-    }
-
-    #id_password {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 12px 15px;
-      font-size: 16px;
-      width: 100%;
-    }
-
-    .login-button {
-      width: 100%;
-      padding: 14px;
-      background-color: #fc8a06;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s ease;
-    }
-
-    .login-button:hover {
-      background-color: #e07a04;
-    }
-
-    .alert-danger {
-      color: #721c24;
-      background-color: #f8d7da;
-      padding: .75rem;
-      margin-bottom: 1rem;
-      border-radius: .25rem;
-      text-align: left;
-    }
-
-    .alternative-login {
-      margin-top: 20px;
-    }
-
-    .alternative-login a {
-      color: #fc8a06;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .nav-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 10px;
-      }
-
-      .login-container {
-        margin-top: 180px;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <div class="logo-title">
-      <img src="/media/logo2.jpeg" alt="TaazaTokri Logo" class="logo" />
-      <a href="{% url 'index' %}"><h1>TaazaTokri</h1></a>
-      
-    </div>
-    <div class="nav-buttons">
-      <a href="{% url 'accounts:login' %}">Login</a>
-      <a href="{% url 'accounts:signup_page' %}">Signup</a>
-    </div>
-  </header>
-
-  <div class="login-container">
-    <div class="login-header">
-      <h1>Welcome Back!</h1>
-      <p>Login with your phone and password.</p>
-    </div>
-
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert-danger">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body { background-color: #f8f9fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Arial', sans-serif; }
+    .login-container { background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; }
+    .logo { margin-bottom: 30px; font-size: 28px; color: #fc8a06; font-weight: bold; }
+    .login-header h1 { color: #333; font-size: 24px; }
+    .login-header p { color: #666; font-size: 16px; margin-bottom: 30px; }
+    .form-group { margin-bottom: 25px; text-align: left; }
+    .form-group label { display: block; margin-bottom: 8px; color: #555; font-weight: 500; }
+    .phone-input { display: flex; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+    .country-code { padding: 12px 15px; background-color: #f5f5f5; border-right: 1px solid #ddd; }
+    .form-group input { flex: 1; padding: 12px 15px; border: none; font-size: 16px; width: 100%; }
+    #id_password { border: 1px solid #ddd; border-radius: 8px; }
+    .login-button { width: 100%; padding: 14px; background-color: #fc8a06; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    .alert-danger { color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: .75rem 1.25rem; margin-bottom: 1rem; border-radius: .25rem; text-align: left; }
+    .alternative-login { margin-top: 20px; }
+    .alternative-login a { color: #fc8a06; text-decoration: none; font-weight: 500; }
+</style>
+<div class="login-container">
+    <div class="logo">🍲 Rajura Misal Bhandaar</div>
+    <div class="login-header"><h1>Welcome Back!</h1><p>Login with your phone and password.</p></div>
+    {% if messages %}{% for message in messages %}<div class="alert-danger">{{ message }}</div>{% endfor %}{% endif %}
     <form method="post">
-      {% csrf_token %}
-      <div class="form-group">
-        <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
-        <div class="phone-input">
-          <span class="country-code">+91</span>
-          {{ form.phone_number }}
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
+            <div class="phone-input"><span class="country-code">+91</span>{{ form.phone_number }}</div>
         </div>
-      </div>
-
-      <div class="form-group">
-        <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
-        {{ form.password }}
-      </div>
-
-      <button type="submit" class="login-button">Login</button>
+        <div class="form-group">
+            <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+            {{ form.password }}
+        </div>
+        <button type="submit" class="login-button">Login</button>
     </form>
-
-    <div class="alternative-login">
-      Don't have an account? <a href="{% url 'accounts:signup_page' %}">Sign Up</a>
-    </div>
-  </div>
-
-</body>
-</html>
+    <div class="alternative-login">Don't have an account? <a href="{% url 'accounts:signup_page' %}">Sign Up</a></div>
+</div>
+{% endblock %}

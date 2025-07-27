@@ -4,35 +4,21 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Supplier Portal</title>
-    <style>
-        /* Your existing CSS is perfect and does not need to change. */
-        :root { --primary: #648364; --background: #EDE8D0; }
-        body { margin: 0; font-family: Arial, sans-serif; background-color: var(--background); }
-        header { background-color: var(--primary); color: white; padding: 1rem; text-align: center; margin-bottom: 2rem; }
-        .container { padding: 1rem; max-width: 960px; margin: auto; }
-        /* ... rest of your styles ... */
-    </style>
-</head>
+    <title>Rajura Misal Bhandaar</title>
+    </head>
 <body>
-
-    {# This is the crucial change. #}
     {% if user.is_authenticated %}
     <header>
         <h1>Welcome, {{ request.user.username }}</h1>
-        <nav class="nav-links">
-            <a href="{% url 'supplier:dashboard' %}">Dashboard</a>
-            <a href="{% url 'supplier:order_history' %}">Order History</a>
+        <nav>
+            <a href="{% if user.supplier_profile %}{% url 'supplier:dashboard' %}{% elif user.vendor_profile %}{% url 'vendor:dashboard' %}{% endif %}">Dashboard</a>
             <a href="{% url 'accounts:logout' %}">Logout</a>
         </nav>
     </header>
     {% endif %}
 
-    <main class="container">
-        {% block content %}
-        {# The login form or dashboard content will appear here. #}
-        {% endblock %}
+    <main>
+        {% block content %}{% endblock %}
     </main>
-
 </body>
 </html>
