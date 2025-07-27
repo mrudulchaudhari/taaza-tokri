@@ -18,18 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views
-
-app_name = 'home'
+from accounts.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('vendor/', include('vendor.urls')),
-    path('supplier/', include('supplier.urls')),
-    path('listings/', include('listings.urls')),
     path('accounts/', include('accounts.urls')),
-    path('', views.index, name="index"),
-
+    path('supplier/', include('supplier.urls')),
+    path('vendor/', include('vendor.urls')),
+    path('', home, name='home'),
 ]
 
 if settings.DEBUG:
