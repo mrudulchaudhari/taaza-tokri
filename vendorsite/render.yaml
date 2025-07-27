@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: django-crud
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn employee.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: employee.settings
+      - key: PYTHON_VERSION
+        value: 3.10
