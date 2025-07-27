@@ -374,7 +374,30 @@ input:focus, textarea:focus, select:focus {
   opacity: 1;
   visibility: visible;
 }
+/* Cart Icon */
+.cart-icon {
+  position: relative;
+}
 
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--secondary);
+  color: var(--dark);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/*common till here for all pages*/
+
+/*BuyerDashboard*/
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -401,6 +424,35 @@ input:focus, textarea:focus, select:focus {
   font-size: 1.5rem;
 }
 
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-md);
+}
+
+.action-card {
+  background: var(--white);
+  color: var(--dark);
+  padding: var(--space-lg);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(100, 131, 100, 0.2);
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(252, 138, 6, 0.3);
+  border-color: var(--primary);
+}
+
+.action-icon {
+  font-size: 2rem;
+  margin-bottom: var(--space-md);
+}
+
+/*food type selection*/
 .food-type-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -440,34 +492,6 @@ input:focus, textarea:focus, select:focus {
   color: var(--gray);
 }
 
-.quick-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--space-md);
-}
-
-.action-card {
-  background: var(--white);
-  color: var(--dark);
-  padding: var(--space-lg);
-  border-radius: 8px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid rgba(100, 131, 100, 0.2);
-}
-
-.action-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(252, 138, 6, 0.3);
-  border-color: var(--primary);
-}
-
-.action-icon {
-  font-size: 2rem;
-  margin-bottom: var(--space-md);
-}
-
 .btn {
   display: inline-block;
   padding: var(--space-sm) var(--space-md);
@@ -495,27 +519,6 @@ input:focus, textarea:focus, select:focus {
 .btn-outline:hover {
   background-color: var(--primary);
   color: var(--white);
-}
-
-/* Cart Icon */
-.cart-icon {
-  position: relative;
-}
-
-.cart-count {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: var(--secondary);
-  color: var(--dark);
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: bold;
 }
 
 /* Page Header */
