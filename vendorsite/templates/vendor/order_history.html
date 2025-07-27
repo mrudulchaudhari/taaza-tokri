@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Order History</title>
+    <style>
+        :root { --primary: #fc8a06; --background: #f8f9fa; --white: #ffffff; --gray: #6c757d; --dark: #343a40; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--background); margin: 0; color: var(--dark); }
+        .navbar { background-color: var(--white); padding: 1rem 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .navbar-brand { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        .navbar-nav a { color: var(--gray); text-decoration: none; font-weight: 500; margin-left: 1.5rem; }
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 2rem; }
+        .order-card { background-color: var(--white); border-radius: 8px; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+        .order-header { padding: 1rem 1.5rem; background-color: #fdfdfd; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .order-header h3 { margin: 0; font-size: 1.1rem; }
+        .order-header span { font-size: 0.9rem; color: var(--gray); }
+        .order-body { padding: 1.5rem; }
+        .order-item { display: flex; justify-content: space-between; padding: 0.5rem 0; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">🛍️ My Orders</div>
+        <div class="navbar-nav">
+            <a href="{% url 'vendor:dashboard' %}">&larr; Back to Dashboard</a>
+            <a href="{% url 'accounts:logout' %}">Logout</a>
+        </div>
+    </nav>
+    <div class="container">
+        {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <h3>Order #{{ order.id }}</h3>
+                    <span>Status: <strong>{{ order.status }}</strong></span>
+                    <span>Placed on: {{ order.created_at|date:"F d, Y" }}</span>
+                </div>
+                <div class="order-body">
+                    {% for item in order.items.all %}
+                        <div class="order-item">
+                            <span>{{ item.quantity }} x {{ item.product.title }} (by {{ item.product.supplier.name }})</span>
+                            <span>${{ item.price }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="order-card"><div class="order-body" style="text-align: center;"><p>You have not placed any orders yet.</p></div></div>
+        {% endfor %}
+    </div>
+</body>
+</html>

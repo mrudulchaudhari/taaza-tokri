@@ -28,10 +28,9 @@
             <a href="{% url 'accounts:logout' %}">Logout</a>
         </div>
     </nav>
-
     <div class="container">
         <h2>Shopping Cart</h2>
-
+        {% if messages %}{% for message in messages %}<div class="alert alert-danger">{{ message }}</div>{% endfor %}{% endif %}
         {% if cart %}
             <table class="cart-table">
                 <thead>
@@ -51,7 +50,6 @@
                     {% endfor %}
                 </tbody>
             </table>
-
             <div class="cart-summary">
                 <h3>Total: ${{ total_price|floatformat:2 }}</h3>
                 <a href="{% url 'vendor:place_order' %}" class="btn-primary">Place Order</a>
