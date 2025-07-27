@@ -1,84 +1,62 @@
-# accounts/forms.py
-
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
 from vendor.models import Vendor
 from supplier.models import Supplier
 
-class VendorSignUpForm(forms.ModelForm):
-    # Add password fields which are not on the Vendor model but are needed for user creation
-    password = forms.CharField(widget=forms.PasswordInput)
-    confirm_password = forms.CharField(widget=forms.PasswordInput)
+# --- Login Form (This form is correct) ---
+class UserLoginForm(forms.Form):
+    phone_number = forms.CharField(label="Phone Number", max_length=10, widget=forms.TextInput(attrs={'id': 'phone'}))
+    password = forms.CharField(label="Password", widget=forms.PasswordInput)
 
-    class Meta:
-        model = Vendor
-        # Specify the fields to include from the Vendor model
-        fields = ['name', 'phone_number', 'email', 'city', 'address', 'cuisine']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Make email optional
-        self.fields['email'].required = False
-        # Make phone number read-only as it's pre-filled
-        self.fields['phone_number'].widget.attrs['readonly'] = True
+# --- Vendor Signup Form (Corrected) ---
+class VendorSignUpForm(UserCreationForm):
+    # These fields are for the Vendor's profile information
+    shop_name = forms.CharField(max_length=255, required=True)
+    phone_number = forms.CharField(max_length=10, required=True, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    address = forms.CharField(widget=forms.Textarea, required=False)
 
-    def clean_confirm_password(self):
-        # Check that the two password entries match
-        password = self.cleaned_data.get("password")
-        confirm_password = self.cleaned_data.get("confirm_password")
-        if password and confirm_password and password != confirm_password:
-            raise forms.ValidationError("Passwords don't match")
-        return confirm_password
+    class Meta(UserCreationForm.Meta):
+        model = CustomUser
+        # These are the fields for the main user account
+        fields = ('username',)
 
     def save(self, commit=True):
-        # Create the CustomUser instance
-        user = CustomUser.objects.create_user(
-            username=self.cleaned_data.get('phone_number'),
-            password=self.cleaned_data.get('password'),
-            user_type='vendor' # Set the user type
+        # This now correctly saves the user and their hashed password first
+        user = super().save(commit=True)
+        # Then it creates the linked Vendor profile
+        Vendor.objects.create(
+            user=user,
+            shop_name=self.cleaned_data['shop_name'],
+            phone_number=self.cleaned_data['phone_number'],
+            address=self.cleaned_data.get('address', '')
         )
-        
-        # Create the Vendor instance, linking it to the user
-        vendor = super().save(commit=False)
-        vendor.user = user
-        
-        if commit:
-            vendor.save()
-            
         return user
 
 
-class SupplierSignUpForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    confirm_password = forms.CharField(widget=forms.PasswordInput)
+# --- Supplier Signup Form (Corrected) ---
+class SupplierSignUpForm(UserCreationForm):
+    # These fields are for the Supplier's profile information
+    name = forms.CharField(max_length=255, required=True, label="Full Name or Business Name")
+    phone = forms.CharField(max_length=10, required=True, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    address = forms.CharField(widget=forms.Textarea, required=False)
+    city = forms.CharField(max_length=100, required=False)
 
-    class Meta:
-        model = Supplier
-        fields = ['name', 'phone', 'email', 'city', 'address', 'cuisine']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['phone'].widget.attrs['readonly'] = True
-
-    def clean_confirm_password(self):
-        password = self.cleaned_data.get("password")
-        confirm_password = self.cleaned_data.get("confirm_password")
-        if password and confirm_password and password != confirm_password:
-            raise forms.ValidationError("Passwords don't match")
-        return confirm_password
+    class Meta(UserCreationForm.Meta):
+        model = CustomUser
+        # These are the fields for the main user account
+        fields = ('username',)
 
     def save(self, commit=True):
-        user = CustomUser.objects.create_user(
-            username=self.cleaned_data.get('phone'),
-            password=self.cleaned_data.get('password'),
-            user_type='supplier'
+        # This now correctly saves the user and their hashed password first
+        user = super().save(commit=True)
+        # Then it creates the linked Supplier profile
+        Supplier.objects.create(
+            user=user,
+            name=self.cleaned_data['name'],
+            phone=self.cleaned_data['phone'],
+            address=self.cleaned_data.get('address', ''),
+            city=self.cleaned_data.get('city', '')
         )
-        
-        supplier = super().save(commit=False)
-        supplier.user = user
-        
-        if commit:
-            supplier.save()
-            
         return user
