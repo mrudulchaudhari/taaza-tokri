@@ -1,0 +1,19 @@
+<div class="review-widget">
+    <div class="review-header">
+        <strong>{{ review.reviewer.get_full_name|default:review.reviewer.username }}</strong>
+        <span class="review-time">{{ review.created_at|date:"M d, Y" }}</span>
+        <span class="review-rating">Rating: {{ review.rating }}/5</span>
+    </div>
+    <div class="review-body">
+        {{ review.text|linebreaks }}
+    </div>
+    {% if review.response %}
+    <div class="review-response">
+        <strong>Response from {{ review.reviewee.get_full_name|default:review.reviewee.username }}:</strong>
+        <div>{{ review.response.response|linebreaks }}</div>
+    </div>
+    {% endif %}
+    <div class="review-footer">
+        <button data-review-id="{{ review.id }}" class="helpful-btn">👍 Helpful ({{ review.helpful_votes.count }})</button>
+    </div>
+</div>

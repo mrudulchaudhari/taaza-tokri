@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="user-reviews-container">
+    <h2>Reviews for {{ user.get_full_name|default:user.username }}</h2>
+
+    <div class="review-stats">
+        <p><b>Average Rating:</b> {{ stats.avg_rating|default:"N/A" }}</p>
+        <p><b>Total Reviews:</b> {{ stats.total_reviews|default:0 }}</p>
+    </div>
+
+    <div class="review-filter">
+        <form method="get">
+            {{ filter_form.as_p }}
+            <button type="submit">Filter</button>
+        </form>
+    </div>
+
+    {% if can_review %}
+        <a href="{% url 'reviews:add_review' user.id %}" class="add-review-link">Write a Review</a>
+    {% endif %}
+
+    <div class="reviews-list">
+        {% for review in reviews %}
+            {% include "reviews/review_widget.html" with review=review %}
+        {% empty %}
+            <p>No reviews yet.</p>
+        {% endfor %}
+    </div>
+
+    <div class="paginator">
+        {% if reviews.has_other_pages %}
+            {% if reviews.has_previous %}
+                <a href="?page={{ reviews.previous_page_number }}" class="pg-link">Previous</a>
+            {% endif %}
+            Page {{ reviews.number }} of {{ reviews.paginator.num_pages }}
+            {% if reviews.has_next %}
+                <a href="?page={{ reviews.next_page_number }}" class="pg-link">Next</a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.user-reviews-container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+}
+.add-review-link {
+    display: inline-block;
+    margin: 16px 0;
+    background: #28a745;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+.review-stats, .review-filter {
+    margin-bottom: 16px;
+}
+.reviews-list {
+    margin-top: 24px;
+}
+.paginator {
+    text-align: center;
+    margin-top: 24px;
+}
+.pg-link {
+    margin: 0 8px;
+    color: #007bff;
+    text-decoration: none;
+}
+.review-widget {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    margin-bottom: 16px;
+    padding: 14px 18px;
+}
+.review-header {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+.review-time, .review-rating {
+    margin-left: 10px;
+    color: #777;
+    font-size: 0.93em;
+}
+.review-response {
+    background: #f3f7fa;
+    border-left: 3px solid #1e7e34;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.98em;
+}
+.helpful-btn {
+    background: #ededed;
+    border-radius: 4px;
+    color: #222;
+    border: 1px solid #ccc;
+    padding: 3px 12px;
+    margin-top: 14px;
+    cursor: pointer;
+}
+</style>
+{% endblock %}

@@ -1,3 +1,6 @@
+<!-- ---------------------------------------------------- -->
+<!-- FILE: supplier/templates/supplier/dashboard.html     -->
+<!-- ---------------------------------------------------- -->
 {% extends 'supplier/base_supplier.html' %}
 
 {% block title %}Supplier Dashboard{% endblock %}
@@ -5,44 +8,77 @@
 
 {% block content %}
 <div class="dashboard-container">
-  <div class="card">
-    <h3>Add New Product</h3>
-    <form method="post">
-      {% csrf_token %}
-      {% for field in form %}
-        <div class="form-group">
-          {{ field.label_tag }}
-          {{ field }}
-        </div>
-      {% endfor %}
-      <button type="submit" class="btn-submit">Add Product</button>
-    </form>
-  </div>
-  <div class="card">
-    <h3>Current Stock</h3>
-    <ul>
-      {% for product in products %}
-        <li class="list-item"><span>{{ product.title }}</span><strong>{{ product.quantity }} available</strong></li>
-      {% empty %}
-        <li>No products listed.</li>
-      {% endfor %}
-    </ul>
-  </div>
-  <div class="card">
-    <h3>Pending Orders</h3>
-    <ul>
-      {% for order in pending_orders %}
-        <li class="list-item">
-          <span>Order #{{ order.id }} by {{ order.user.username }}</span>
-          <span class="order-actions">
-            <a href="{% url 'supplier:update_order_status' order.id 'Shipped' %}" title="Mark Shipped">✅</a>
-            <a href="{% url 'supplier:update_order_status' order.id 'Cancelled' %}" title="Cancel Order">❌</a>
-          </span>
-        </li>
-      {% empty %}
-        <li>No pending orders.</li>
-      {% endfor %}
-    </ul>
-  </div>
+    <!-- Add Product Card -->
+    <div class="card">
+        <h3>Add New Product</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-submit">Add Product</button>
+        </form>
+    </div>
+    <!-- Current Stock Card -->
+    <div class="card">
+        <h3>Current Stock</h3>
+        <ul>
+            {% for product in products %}
+                <li class="list-item"><span>{{ product.title }}</span><strong>{{ product.quantity }} available</strong></li>
+            {% empty %}
+                <li>No products listed.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Pending Orders Card -->
+    <div class="card">
+        <h3>Pending Orders</h3>
+        <ul>
+            {% for order in pending_orders %}
+                <li class="list-item">
+                    <span>Order #{{ order.id }} by {{ order.user.email }}</span>
+                    <span class="order-actions">
+                        <a href="{% url 'supplier:update_order_status' order.id 'Shipped' %}" title="Mark Shipped">✅</a>
+                        <a href="{% url 'supplier:update_order_status' order.id 'Cancelled' %}" title="Cancel Order">❌</a>
+                    </span>
+                </li>
+            {% empty %}
+                <li>No pending orders.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Completed Orders Card -->
+    <div class="card">
+        <h3>Completed Orders</h3>
+        <ul>
+            {% for order in completed_orders %}
+                <li class="list-item">
+                    <span>Order #{{ order.id }} by {{ order.user.email }} (Status: {{ order.status }})</span>
+                    
+                    {% if order.status == 'Delivered' %}
+                        <div class="review-section">
+                            {# --- THIS IS THE CORRECTED LOGIC --- #}
+                            {% with vendor_to_review=order.user %}
+                                {% if not order.is_reviewed_by_supplier %}
+                                    <a href="{% url 'reviews:add_review' order.id vendor_to_review.id %}" class="btn-review">
+                                        Rate Vendor ({{ vendor_to_review.email }})
+                                    </a>
+                                {% else %}
+                                    <p class="reviewed-text">✓ You've reviewed this vendor.</p>
+                                {% endif %}
+                            {% endwith %}
+
+                            {% if order.review_from_vendor %}
+                                <div class="received-review">
+                                    <p><strong>Rating from Vendor:</strong> {{ order.review_from_vendor.rating }}/5 Stars</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>No completed orders yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}

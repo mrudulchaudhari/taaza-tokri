@@ -14,13 +14,37 @@
             <div class="order-body">
                 {% for item in order.items.all %}
                     <div class="order-item">
-                        <span>{{ item.quantity }} x {{ item.product.title }} (by {{ item.product.supplier.name }})</span>
+                        <div>
+                            <span>{{ item.quantity }} x {{ item.product.title }} (by {{ item.product.supplier.name }})</span>
+                        </div>
                         <span>${{ item.price }}</span>
                     </div>
                 {% endfor %}
+            </div>
+            <div class="order-footer" style="text-align: right; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
                 {% if order.status == 'Shipped' %}
-                    <div style="text-align: right; margin-top: 1rem;">
-                        <a href="{% url 'vendor:mark_delivered' order.id %}" class="btn-receive">✓ Mark as Received</a>
+                    <a href="{% url 'vendor:mark_delivered' order.id %}" class="btn-receive">✓ Mark as Received</a>
+                {% endif %}
+
+                {% if order.status == 'Delivered' %}
+                    <div class="review-section">
+                        {# --- VENDOR'S ABILITY TO REVIEW SUPPLIER --- #}
+                        {% with supplier_user=order.items.first.product.supplier.user %}
+                            {% if not order.is_reviewed_by_vendor %}
+                                <a href="{% url 'reviews:add_review' order.id supplier_user.id %}" class="btn-review">
+                                    Rate Supplier
+                                </a>
+                            {% else %}
+                                <p class="reviewed-text">✓ You've reviewed the supplier.</p>
+                            {% endif %}
+                        {% endwith %}
+
+                        {# --- DISPLAY RATING FROM SUPPLIER --- #}
+                        {% if order.review_from_supplier %}
+                            <div class="received-review" style="text-align: left; margin-top: 0.5rem;">
+                                <p><strong>Rating from Supplier:</strong> {{ order.review_from_supplier.rating }}/5 Stars</p>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>

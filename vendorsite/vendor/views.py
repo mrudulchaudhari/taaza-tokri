@@ -1,3 +1,4 @@
+# FILE: vendor/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -5,18 +6,55 @@ from django.db import transaction
 from listings.models import ProductListing
 from supplier.models import Order, OrderItem
 from .models import Vendor
+from reviews.models import Review # <-- 1. ADDED THIS IMPORT
 
 @login_required
 def vendor_dashboard(request):
-    try: vendor_profile = request.user.vendor_profile
-    except Vendor.DoesNotExist: return redirect('accounts:login')
-    vendor_city = vendor_profile.city
-    available_products = []
-    if vendor_city:
-        available_products = ProductListing.objects.filter(supplier__city__iexact=vendor_city, is_active=True, quantity__gt=0).select_related('supplier')
-    else: messages.warning(request, "Please set your city in your profile to see products.")
-    context = {'products': available_products, 'vendor_city': vendor_city, 'cart': request.session.get('cart', {})}
+    """
+    Displays the vendor dashboard with available products.
+    THIS IS THE SIMPLIFIED VERSION: It shows all products from all cities.
+    """
+    try:
+        # This part is still needed to make sure the user is a vendor
+        vendor_profile = request.user.vendor_profile
+    except Vendor.DoesNotExist:
+        # If they don't have a vendor profile, they can't access this page.
+        messages.error(request, "You do not have a vendor profile.")
+        return redirect('accounts:login')
+
+    # --- SIMPLIFIED CODE ---
+    # This line now gets ALL active products with a quantity greater than 0.
+    # The city filter has been removed for now.
+    available_products = ProductListing.objects.filter(
+        is_active=True,
+        quantity__gt=0
+    ).select_related('supplier')
+    
+    if not available_products.exists():
+        messages.info(request, "No products are currently available from any supplier.")
+
+    context = {
+        'products': available_products,
+        'cart': request.session.get('cart', {})
+    }
     return render(request, 'vendor/dashboard.html', context)
+
+@login_required
+def order_history(request):
+    # Your original query is kept, with 'reviews' added to prefetch_related
+    orders = Order.objects.filter(user=request.user).prefetch_related(
+        'items', 'items__product__supplier__user', 'reviews'
+    ).order_by('-created_at')
+
+    # 2. ADDED THIS LOOP to prepare data for the template
+    for order in orders:
+        order.is_reviewed_by_vendor = order.reviews.filter(reviewer=request.user).exists()
+        review_from_supplier = order.reviews.filter(reviewee=request.user).first()
+        order.review_from_supplier = review_from_supplier
+        
+    return render(request, 'vendor/order_history.html', {'orders': orders})
+
+# --- The rest of your views are unchanged ---
 
 @login_required
 def add_to_cart(request):
@@ -45,20 +83,18 @@ def view_cart(request):
 @transaction.atomic
 def place_order(request):
     cart = request.session.get('cart', {})
-    if not cart: return redirect('vendor:view_cart')
+    if not cart:
+        return redirect('vendor:view_cart')
     
     order = Order.objects.create(user=request.user, status='Pending')
     for product_id, item_data in cart.items():
-        # Lock the product row to prevent race conditions
         product = ProductListing.objects.select_for_update().get(id=int(product_id))
         if product.quantity >= item_data['quantity']:
             OrderItem.objects.create(order=order, product=product, quantity=item_data['quantity'], price=item_data['price'])
-            # Reduce the quantity
             product.quantity -= item_data['quantity']
             product.save()
         else:
             messages.error(request, f"Not enough stock for {product.title}. Order cancelled.")
-            # This will roll back the entire transaction, including the Order creation.
             return redirect('vendor:view_cart')
 
     del request.session['cart']
@@ -66,19 +102,9 @@ def place_order(request):
     return redirect('vendor:order_history')
 
 @login_required
-def order_history(request):
-    orders = Order.objects.filter(user=request.user).prefetch_related('items', 'items__product', 'items__product__supplier').order_by('-created_at')
-    return render(request, 'vendor/order_history.html', {'orders': orders})
-
-@login_required
 def mark_order_delivered(request, order_id):
-    """
-    Allows the vendor to mark an order they placed as 'Delivered'.
-    """
-    # Get the order, ensuring it belongs to the logged-in user
     order = get_object_or_404(Order, id=order_id, user=request.user)
     
-    # Only allow this action if the order is currently 'Shipped'
     if order.status == 'Shipped':
         order.status = 'Delivered'
         order.save()

@@ -1,3 +1,4 @@
+# accounts/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -15,8 +16,6 @@ def landing_page_view(request):
             return redirect('supplier:dashboard')
         elif hasattr(request.user, 'vendor_profile'):
             return redirect('vendor:dashboard')
-        # Fallback for other logged-in users like admins, can redirect to a generic page or admin
-        # For now, we'll allow them to see the landing page.
     
     return render(request, 'landing.html')
 
@@ -48,8 +47,9 @@ def login_view(request):
                     pass
 
             if user:
-                # Authenticate the user with their found username and the provided password
-                authenticated_user = authenticate(request, username=user.username, password=password)
+                # THE FIX IS HERE:
+                # Authenticate the user with their email and the provided password
+                authenticated_user = authenticate(request, username=user.email, password=password)
                 
                 if authenticated_user is not None:
                     login(request, authenticated_user)

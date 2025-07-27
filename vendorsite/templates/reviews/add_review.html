@@ -1,0 +1,29 @@
+{# This template should extend a neutral base template, not a role-specific one #}
+{% extends 'base.html' %} 
+
+{% block title %}Review Order #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 2rem auto; padding: 2rem; background: #fff; border-radius: 8px;">
+    
+    <h2>Review your order with <strong>{{ reviewee.email }}</strong></h2>
+    <p>You are reviewing Order #{{ order.id }}</p>
+
+    <form method="post" class="review-form">
+        {% csrf_token %}
+        
+        <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="id_rating" style="display: block; margin-bottom: 0.5rem;">Rating:</label>
+            {{ form.rating }}
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="id_comment" style="display: block; margin-bottom: 0.5rem;">Comment:</label>
+            {{ form.comment }}
+        </div>
+        
+        <button type="submit" class="btn">Submit Review</button>
+    </form>
+
+</div>
+{% endblock %}

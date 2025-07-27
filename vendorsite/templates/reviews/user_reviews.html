@@ -1,0 +1,21 @@
+{% extends 'base.html' %} {# Or your specific vendor/supplier base template #}
+
+{% block title %}My Received Reviews{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>My Received Reviews</h2>
+    
+    {% for review in reviews %}
+        <div class="review-card">
+            <p><strong>Rating: {{ review.rating }}/5 Stars</strong></p>
+            <p>From: {{ review.reviewer.email }}</p>
+            <p>For Order: #{{ review.order.id }}</p>
+            <blockquote>"{{ review.comment|default:'No comment provided.' }}"</blockquote>
+            <small>On: {{ review.created_at|date:"F d, Y" }}</small>
+        </div>
+    {% empty %}
+        <p>You have not received any reviews yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -7,9 +7,35 @@
     <h2 class="order-history-title">Your Past Orders</h2>
     {% for order in orders %}
         <div class="order-card">
-            <h4>Order #{{ order.id }} from {{ order.user.username }}</h4>
+            <h4>Order #{{ order.id }} from {{ order.user.email }}</h4>
             <p><strong>Status:</strong> {{ order.get_status_display }}</p>
             <p><strong>Placed on:</strong> {{ order.created_at|date:"F d, Y" }}</p>
+            
+            {% if order.status == 'Delivered' %}
+                <div class="review-section" style="margin-top: 1rem; border-top: 1px solid #eee; padding-top: 1rem;">
+                    {# --- THIS IS THE CORRECTED LOGIC --- #}
+                    {% with vendor_to_review=order.user %}
+                        {% if not order.is_reviewed_by_supplier %}
+                            <a href="{% url 'reviews:add_review' order.id vendor_to_review.id %}" class="btn-review">
+                                Rate Vendor ({{ vendor_to_review.email }})
+                            </a>
+                        {% else %}
+                            <p class="reviewed-text">✓ You've reviewed this vendor.</p>
+                        {% endif %}
+                    {% endwith %}
+
+                    {% if order.review_from_vendor %}
+                        <div class="received-review" style="margin-top: 0.5rem;">
+                            <p><strong>Rating from Vendor:</strong> {{ order.review_from_vendor.rating }}/5 Stars</p>
+                            {% if order.review_from_vendor.comment %}
+                                <blockquote>"{{ order.review_from_vendor.comment }}"</blockquote>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                         <p class="reviewed-text" style="margin-top: 0.5rem;">Vendor has not reviewed this order yet.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
     {% empty %}
         <div class="order-card">
