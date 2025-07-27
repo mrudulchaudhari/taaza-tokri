@@ -1,37 +1,286 @@
-{% extends 'vendor/base_vendor.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Dashboard</title>
+    <style>
+        :root {
+            --primary: #648364;
+            --background: #EDE8D0;
+            --white: #ffffff;
+            --gray: #6c757d;
+            --dark: #333;
+            --light-border: #ddd;
+            --accent: #4f6f52;
+        }
 
-{% block title %}Vendor Dashboard{% endblock %}
-{% block nav_title %}Vendor Dashboard{% endblock %}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            margin: 0;
+            color: var(--dark);
+        }
 
-{% block content %}
-    <header class="welcome-header">
-        <h1>Welcome, {{ user.vendor_profile.shop_name }}!</h1>
-        <p>Products available in <strong>{{ vendor_city|default:"your area" }}</strong>.</p>
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            background-color: var(--primary);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #f6f2e6;
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: #f6f2e6;
+        }
+
+        .nav-buttons a {
+            margin-left: 15px;
+            padding: 8px 15px;
+            background-color: #f6f2e6;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+
+        .nav-buttons a:hover {
+            background-color: var(--accent);
+            color: #f0e9d4;
+        }
+
+        .welcome-header {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .welcome-header h1 {
+            margin: 0;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-card-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .product-card h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .product-card p {
+            margin-bottom: 0.25rem;
+            color: var(--gray);
+        }
+
+        .product-card-footer {
+            background-color: #fcfcfc;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--light-border);
+        }
+
+        .add-to-cart-form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-controls button {
+            background-color: var(--accent);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            padding: 0.4rem 0.8rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .quantity-controls button:hover {
+            background-color: var(--primary);
+        }
+
+        .quantity-controls input {
+            width: 50px;
+            text-align: center;
+            padding: 0.4rem;
+            border: 1px solid var(--light-border);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .btn-add-to-cart {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-add-to-cart:hover {
+            background-color: var(--accent);
+        }
+
+        .alert {
+            background-color: #f8d7da;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: #721c24;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-title">
+            <img src="{% static 'images/logo2.jpeg' %}" alt="TaazaTokri Logo" class="logo" />
+            
+            <a href="{% url 'landing' %}" style="color: #f6f2e6;"><h1>Vendor Dashboard</h1></a>
+        </div>
+        <div class="nav-buttons">
+            <a href="{% url 'vendor:dashboard' %}">Dashboard</a>
+            <a href="{% url 'vendor:view_cart' %}">My Cart</a>
+            <a href="{% url 'vendor:order_history' %}">My Orders</a>
+            <a href="{% url 'accounts:logout' %}">Logout</a>
+        </div>
     </header>
 
-    <main class="product-grid">
-        {% for product in products %}
-            <div class="product-card">
-                <div class="product-card-body">
-                    <h3>{{ product.title }}</h3>
-                    <p><strong>Supplier:</strong> {{ product.supplier.name }}</p>
-                    <p><strong>Cuisine:</strong> {{ product.get_cuisine_display }}</p>
-                    <p><strong>Available:</strong> {{ product.quantity }} units</p>
+    <div class="container">
+        <header class="welcome-header">
+            <h1 style="color: var(--primary);">Welcome, {{ user.vendor_profile.shop_name }}!</h1>
+            <strong style="color: var(--primary);">
+                Products available in 
+                <strong style="color: var(--primary);">{{ vendor_city|default:"your area" }}</strong>.
+            </strong>
+        </header>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <main class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <div class="product-card-body">
+                        <h3>{{ product.title }}</h3>
+                        <p><strong>Supplier:</strong> {{ product.supplier.name }}</p>
+                        <p><strong>Cuisine:</strong> {{ product.get_cuisine_display }}</p>
+                        <p><strong>Available:</strong> {{ product.quantity }} units</p>
+                    </div>
+                    <div class="product-card-footer">
+                        <form method="post" action="{% url 'vendor:add_to_cart' %}" class="add-to-cart-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+
+                            <div class="quantity-controls">
+                                <button type="button" onclick="decreaseQty(this)">−</button>
+                                <input type="number" name="quantity" value="0" min="0" class="qty-input" />
+                                <button type="button" onclick="increaseQty(this)">+</button>
+                            </div>
+
+                            <span class="price">${{ product.price }}</span>
+                            <button type="submit" class="btn-add-to-cart">Add to Cart</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="product-card-footer">
-                    <form method="post" action="{% url 'vendor:add_to_cart' %}" class="add-to-cart-form">
-                        {% csrf_token %}
-                        <input type="hidden" name="product_id" value="{{ product.id }}">
-                        <span class="price">${{ product.price }}</span>
-                        <button type="submit" class="btn-add-to-cart">Add to Cart</button>
-                    </form>
+            {% empty %}
+                <div class="welcome-header" style="grid-column: 1 / -1;">
+                    <h2>No Products Found</h2>
+                    <p>There are currently no products listed by suppliers in your city.</p>
                 </div>
-            </div>
-        {% empty %}
-            <div class="welcome-header" style="grid-column: 1 / -1;">
-                <h2>No Products Found</h2>
-                <p>There are currently no products listed by suppliers in your city.</p>
-            </div>
-        {% endfor %}
-    </main>
-{% endblock %}
+            {% endfor %}
+        </main>
+    </div>
+
+    <script>
+        function increaseQty(btn) {
+            const input = btn.parentElement.querySelector('.qty-input');
+            input.value = parseInt(input.value) + 1;
+        }
+
+        function decreaseQty(btn) {
+            const input = btn.parentElement.querySelector('.qty-input');
+            const current = parseInt(input.value);
+            if (current > 0) {
+                input.value = current - 1;
+            }
+        }
+
+        document.querySelectorAll('.add-to-cart-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const qty = parseInt(form.querySelector('.qty-input').value);
+                if (qty === 0) {
+                    e.preventDefault();
+                    alert("Please select a quantity greater than 0 before adding to cart.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -5,29 +5,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{% block title %}TaazaTokri{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style_v2.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
 </head>
 <body>
     <header>
         <div class="logo-title">
             <img src="{% static 'images/logo2.jpeg' %}" alt="TaazaTokri Logo" class="logo" />
-            <a href="{% url 'landing' %}" style="color: #f6f2e6;"><h1>TaazaTokri</h1></a>
+            <a href="{% url 'landing' %}"><h1>TaazaTokri</h1></a>
         </div>
         <div class="nav-buttons">
             {% if user.is_authenticated %}
-                {% if user.supplier_profile %}
-                    <a href="{% url 'supplier:dashboard' %}">Dashboard</a>
-                    <a href="{% url 'supplier:order_history' %}">Order History</a>
-                {% elif user.vendor_profile %}
-                    <a href="{% url 'vendor:dashboard' %}">Dashboard</a>
-                    <a href="{% url 'vendor:view_cart' %}">My Cart</a>
-                    <a href="{% url 'vendor:order_history' %}">My Orders</a>
-                {% endif %}
                 <a href="{% url 'accounts:logout' %}">Logout</a>
             {% else %}
-                <a href="{% url 'accounts:login' %}">Login</a>
-                <a href="{% url 'accounts:signup_page' %}">Signup</a>
+                {% if request.resolver_match.url_name != 'login' %}
+                    <a href="{% url 'accounts:login' %}">Login</a>
+                {% endif %}
+                {% if request.resolver_match.url_name != 'signup_page' %}
+                    <a href="{% url 'accounts:signup_page' %}">Signup</a>
+                {% endif %}
             {% endif %}
         </div>
     </header>
