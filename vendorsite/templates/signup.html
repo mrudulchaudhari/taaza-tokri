@@ -10,20 +10,75 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Arial', sans-serif;
+      font-family: 'Poppins', sans-serif;
     }
 
     body {
       background-color: #f8f9fa;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
+      padding-top: 100px; /* space for navbar */
     }
 
+    a {
+      color: #f6f2e6;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Navbar */
+    header {
+      background-color: #648364;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      color: #f6f2e6;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-title h1 {
+      font-size: 1.5rem;
+      color: #f6f2e6;
+    }
+
+    .logo-title img.logo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .nav-buttons a {
+      margin-left: 15px;
+      padding: 8px 15px;
+      background-color: #f6f2e6;
+      color: #648364;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 5px;
+      transition: 0.3s ease;
+    }
+
+    .nav-buttons a:hover {
+      background-color: #4f6f52;
+      color: #f0e9d4;
+    }
+
+    /* Form container */
     .login-container {
       background-color: white;
+      margin: 0 auto;
       padding: 40px;
       border-radius: 12px;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
@@ -85,13 +140,13 @@
       margin-bottom: 20px;
       font-size: 20px;
       color: #555;
-      display: none; /* Hidden initially */
+      display: none;
     }
 
     .form-group {
       margin-bottom: 25px;
       text-align: left;
-      display: none; /* Hidden initially */
+      display: none;
     }
 
     .form-group label {
@@ -140,15 +195,41 @@
       cursor: pointer;
       transition: background-color 0.3s;
       margin-top: 10px;
-      display: none; /* Hidden initially */
+      display: none;
     }
 
     .login-button:hover {
       background-color: #e67a00;
     }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .nav-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
   </style>
 </head>
 <body>
+
+  <header>
+    <div class="logo-title">
+      <img src="/media/logo2.jpeg" alt="TaazaTokri Logo" class="logo" />
+      <a href="{% url 'index' %}"><h1>TaazaTokri</h1></a>
+    </div>
+    <div class="nav-buttons">
+      <a href="{% url 'accounts:login' %}">Login</a>
+      <a href="{% url 'accounts:signup_page' %}">Signup</a>
+    </div>
+  </header>
+
   <div class="login-container">
     <div class="logo">🍲 Rajura Misal Bhandaar</div>
 
@@ -162,17 +243,14 @@
 
     <div class="login-header" id="loginHeader">Enter your phone to continue</div>
 
-    <!-- This form submits to your 'signup_start' view -->
     <form id="signupForm" method="post" action="{% url 'accounts:signup_start' %}">
       {% csrf_token %}
-      <!-- This hidden input will store the selected role -->
       <input type="hidden" name="role" id="roleInput">
 
       <div class="form-group" id="phoneGroup">
         <label for="phone">Phone Number</label>
         <div class="phone-input">
           <span class="country-code">+91</span>
-          <!-- The name 'phone_number' matches what your view expects -->
           <input type="tel" id="phone" name="phone_number" placeholder="Enter your phone number" required pattern="[0-9]{10}" title="10-digit phone number" />
         </div>
       </div>
@@ -200,16 +278,16 @@
 
     function selectRole(role) {
       selectedRole = role;
-      // Set the hidden input's value to 'buyer' or 'seller'
-      roleInput.value = role; 
+      roleInput.value = role;
 
       if (role === 'buyer') {
         buyerBtn.classList.add('selected');
         sellerBtn.classList.remove('selected');
-      } else if (role === 'seller') {
+      } else {
         sellerBtn.classList.add('selected');
         buyerBtn.classList.remove('selected');
       }
+
       showPhoneForm();
     }
 
@@ -217,9 +295,8 @@
     sellerBtn.addEventListener('click', () => selectRole('seller'));
 
     signupForm.addEventListener('submit', function (e) {
-      // Basic client-side validation before submitting
       if (!selectedRole) {
-        e.preventDefault(); // Stop the form from submitting
+        e.preventDefault();
         alert('Please select whether you are a Buyer or a Seller.');
       }
     });

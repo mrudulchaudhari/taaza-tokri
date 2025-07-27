@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TaazaTokri - For Street Food Vendors</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #EDE8D0;
+      color: #333;
+    }
+
+    header {
+      background-color: #648364;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #f6f2e6;
+    }
+
+    .nav-buttons a {
+      margin-left: 15px;
+      padding: 8px 15px;
+      background-color: #f6f2e6;
+      color: #648364;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 5px;
+      transition: 0.3s ease;
+    }
+
+    .nav-buttons a:hover {
+      background-color: #4f6f52;
+      color: #f0e9d4;
+    }
+
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 60px 40px;
+    }
+
+    .hero-text {
+      flex: 1;
+      max-width: 600px;
+    }
+
+    .hero h2 {
+      font-size: 3rem;
+      color: #648364;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+
+    .hero button {
+      padding: 12px 25px;
+      font-size: 1rem;
+      border: none;
+      background-color: #648364;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .hero button:hover {
+      background-color: #4f6f52;
+    }
+
+    .hero-img {
+      flex: 1;
+      max-width: 500px;
+    }
+
+    .hero-img img {
+      width: 100%;
+      border-radius: 15px;
+    }
+
+    .features {
+      background-color: #ebe5d3;
+      padding: 60px 40px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+
+    .feature {
+      max-width: 300px;
+      text-align: center;
+      margin: 20px;
+    }
+
+    .feature img {
+      width: 80px;
+      margin-bottom: 15px;
+    }
+
+    .feature h3 {
+      color: #648364;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      background-color: #648364;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    a {
+      color: #f6f2e6;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-img {
+        margin-top: 30px;
+      }
+
+      .nav-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-title">
+      <img src="media/logo2.jpeg" alt="TaazaTokri Logo" class="logo" />
+      <a href="{% url 'index' %}"><h1>TaazaTokri</h1></a>
+    </div>
+    <div class="nav-buttons">
+      <a href="{% url 'accounts:login' %}">Login</a>
+      <a href="{% url 'accounts:signup_page' %}">Signup</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h2>Empowering Street Food Vendors</h2>
+      <p>One-stop solution for quality raw materials – direct from trusted suppliers to your food cart. Clean, assured, and community-driven.</p>
+      <a href="{% url 'accounts:login' %}"><button>Get Started</button></a>
+    </div>
+    <div class="hero-img">
+      <img src="media/food.png" alt="Street food vendor"/>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <img src="https://img.icons8.com/color/96/ingredients.png" alt="Ingredients">
+      <h3>Quality Ingredients</h3>
+      <p>Get verified raw materials delivered directly from trusted sources.</p>
+    </div>
+    <div class="feature">
+      <img src="https://img.icons8.com/color/96/cleaning-a-surface.png" alt="Clean Market">
+      <h3>Clean & Safe Market</h3>
+      <p>We promote hygiene, cleanliness, and proper handling practices.</p>
+    </div>
+    <div class="feature">
+      <img src="https://img.icons8.com/color/96/checked-user-male.png" alt="Verified Sellers">
+      <h3>Verified Suppliers</h3>
+      <p>Every supplier is community-rated, reviewed, and verified for your safety.</p>
+    </div>
+  </section>
+
+</body>
+</html>
